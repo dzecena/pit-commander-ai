@@ -1,0 +1,7 @@
+{
+  "total_records": 12500,
+  "lap_errors_fixed": 300,
+  "timestamp_corrections": 12500,
+  "vehicle_id_parsed": 12500,
+  "derived_features_added": 4
+}
