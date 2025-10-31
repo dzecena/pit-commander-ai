@@ -139,67 +139,132 @@ class GRCupDataCleaner:
     def align_timestamps(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Use meta_time (accurate) over timestamp (ECU, may drift)
-        Convert to datetime for easier manipulation
+        
+        GR Cup Timestamp Notes:
+        - meta_time: Time message was received (accurate)
+        - timestamp: Time on ECU (may not be accurate)
+        
+        Also handle GPS and lap distance data:
+        - VBOX_Long_Minutes: GPS longitude (degrees)
+        - VBOX_Lat_Min: GPS latitude (degrees) 
+        - Laptrigger_lapdist_dls: Distance from start/finish line (meters)
         """
-        logger.info("Aligning timestamps...")
+        logger.info("Aligning timestamps using GR Cup meta_time...")
         
         df = df.copy()
         corrections = 0
         
-        # Prefer meta_time over timestamp
+        # Prefer meta_time over timestamp (as per GR Cup documentation)
         if 'meta_time' in df.columns:
-            # Use meta_time where available
+            # Use meta_time where available (more accurate)
             mask = pd.notna(df['meta_time'])
             df.loc[mask, 'timestamp'] = df.loc[mask, 'meta_time']
             corrections = mask.sum()
+            logger.info(f"Using meta_time for {corrections} records (more accurate than ECU timestamp)")
         
         # Convert to datetime
         df['timestamp_dt'] = pd.to_datetime(df['timestamp'], unit='ms', errors='coerce')
         
+        # Handle GPS coordinates if present
+        gps_columns_found = []
+        if 'VBOX_Long_Minutes' in df.columns:
+            # Convert GPS longitude to standard format
+            df['longitude'] = pd.to_numeric(df['VBOX_Long_Minutes'], errors='coerce')
+            gps_columns_found.append('longitude')
+        
+        if 'VBOX_Lat_Min' in df.columns:
+            # Convert GPS latitude to standard format
+            df['latitude'] = pd.to_numeric(df['VBOX_Lat_Min'], errors='coerce')
+            gps_columns_found.append('latitude')
+        
+        # Handle lap distance from start/finish line
+        if 'Laptrigger_lapdist_dls' in df.columns:
+            df['distance_from_sf'] = pd.to_numeric(df['Laptrigger_lapdist_dls'], errors='coerce')
+            gps_columns_found.append('distance_from_sf')
+        
+        if gps_columns_found:
+            logger.info(f"Processed GPS/position data: {gps_columns_found}")
+        
         # Remove records with invalid timestamps
         valid_timestamps = pd.notna(df['timestamp_dt'])
+        invalid_count = (~valid_timestamps).sum()
         df = df[valid_timestamps]
         
+        if invalid_count > 0:
+            logger.warning(f"Removed {invalid_count} records with invalid timestamps")
+        
         self.cleaning_stats['timestamp_corrections'] = corrections
-        logger.info(f"Aligned {corrections} timestamps")
+        logger.info(f"Timestamp alignment complete: {corrections} corrections made")
         
         return df
     
     def calculate_derived_features(self, df: pd.DataFrame) -> pd.DataFrame:
         """
-        Add computed columns:
-        - braking_intensity = pbrake_f * abs(accx_can.clip(upper=0))
+        Add computed columns based on GR Cup telemetry parameters:
+        
+        GR Cup Parameters:
+        - Speed: Vehicle speed (km/h)
+        - nmotor: Engine RPM
+        - ath: Throttle blade position (0-100%)
+        - aps: Accelerator pedal position (0-100%)
+        - pbrake_f: Front brake pressure (bar)
+        - pbrake_r: Rear brake pressure (bar)
+        - accx_can: Forward/backward acceleration (G's, positive=accelerating, negative=braking)
+        - accy_can: Lateral acceleration (G's, positive=left turn, negative=right turn)
+        - Steering_Angle: Steering wheel angle (degrees, 0=straight, negative=CCW, positive=CW)
+        
+        Derived Features:
+        - braking_intensity = pbrake_f * abs(accx_can when braking)
         - cornering_force = abs(accy_can * Steering_Angle)
         - throttle_efficiency = Speed / (ath + 1)
+        - pedal_vs_throttle = aps - ath (driver vs actual throttle)
+        - total_brake_pressure = pbrake_f + pbrake_r
         - rpm_per_gear = nmotor / (Gear + 1)
         """
-        logger.info("Calculating derived features...")
+        logger.info("Calculating derived features from GR Cup telemetry...")
         
         df = df.copy()
         features_added = 0
         
-        # Braking intensity
+        # Braking intensity (front brake pressure during braking G-force)
         if 'pbrake_f' in df.columns and 'accx_can' in df.columns:
-            df['braking_intensity'] = df['pbrake_f'] * np.abs(df['accx_can'].clip(upper=0))
+            # Only consider negative accx_can (braking)
+            braking_accx = df['accx_can'].clip(upper=0).abs()
+            df['braking_intensity'] = df['pbrake_f'] * braking_accx
             features_added += 1
         
-        # Cornering force
+        # Cornering force (lateral G's combined with steering input)
         if 'accy_can' in df.columns and 'Steering_Angle' in df.columns:
             df['cornering_force'] = np.abs(df['accy_can'] * df['Steering_Angle'])
             features_added += 1
         
-        # Throttle efficiency
+        # Throttle efficiency (speed achieved per throttle percentage)
         if 'Speed' in df.columns and 'ath' in df.columns:
             df['throttle_efficiency'] = df['Speed'] / (df['ath'] + 1)
             features_added += 1
         
-        # RPM per gear
+        # Pedal vs throttle difference (driver input vs actual throttle blade)
+        if 'aps' in df.columns and 'ath' in df.columns:
+            df['pedal_vs_throttle'] = df['aps'] - df['ath']
+            features_added += 1
+        
+        # Total brake pressure (front + rear)
+        if 'pbrake_f' in df.columns and 'pbrake_r' in df.columns:
+            df['total_brake_pressure'] = df['pbrake_f'] + df['pbrake_r']
+            features_added += 1
+        
+        # RPM per gear (engine efficiency indicator)
         if 'nmotor' in df.columns and 'Gear' in df.columns:
             df['rpm_per_gear'] = df['nmotor'] / (df['Gear'] + 1)
             features_added += 1
         
+        # Speed vs RPM ratio (overall drivetrain efficiency)
+        if 'Speed' in df.columns and 'nmotor' in df.columns:
+            df['speed_per_rpm'] = df['Speed'] / (df['nmotor'] + 1)
+            features_added += 1
+        
         self.cleaning_stats['derived_features_added'] = features_added
-        logger.info(f"Added {features_added} derived features")
+        logger.info(f"Added {features_added} derived features from GR Cup telemetry")
         
         return df
     

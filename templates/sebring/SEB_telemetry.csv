@@ -1,0 +1,6 @@
+vehicle_id,timestamp,meta_time,lap,Speed,pbrake_f,ath,Steering_Angle,accx_can,accy_can,nmotor,Gear,track_name,track_id
+GR86-001-042,1635724800000,1635724800000,1,45.2,0.0,15.3,-2.1,0.2,0.1,3200,2,Sebring International Raceway,SEB
+GR86-001-042,1635724800100,1635724800100,1,47.8,0.0,18.7,-1.8,0.3,0.2,3350,2,Sebring International Raceway,SEB
+GR86-001-042,1635724800200,1635724800200,1,52.1,0.0,25.4,-1.2,0.5,0.4,3500,2,Sebring International Raceway,SEB
+GR86-001-042,1635724800300,1635724800300,1,58.3,15.3,35.2,0.5,-0.8,0.6,3800,3,Sebring International Raceway,SEB
+GR86-001-042,1635724800400,1635724800400,1,62.7,25.8,42.1,2.3,-1.2,0.3,4100,3,Sebring International Raceway,SEB

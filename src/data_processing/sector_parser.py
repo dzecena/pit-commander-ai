@@ -24,14 +24,16 @@ import glob
 
 logger = logging.getLogger(__name__)
 
-# Sector mapping for consistency
+# GR Cup sector mapping (confirmed from track documentation)
+# Track sections are divided by red lines, sub-sections by white lines
+# Each section has two sub-sections (a and b)
 SECTOR_MAPPING = {
-    'S1.a': 'IM1a',
-    'S1.b': 'IM1', 
-    'S2.a': 'IM2a',
-    'S2.b': 'IM2',
-    'S3.a': 'IM3a',
-    'S3.b': 'FL'
+    'S1.a': 'IM1a',  # First half of section 1
+    'S1.b': 'IM1',   # Second half of section 1
+    'S2.a': 'IM2a',  # First half of section 2
+    'S2.b': 'IM2',   # Second half of section 2
+    'S3.a': 'IM3a',  # First half of section 3
+    'S3.b': 'FL'     # Final sector to finish line
 }
 
 SECTOR_COLUMNS = ['IM1a', 'IM1', 'IM2a', 'IM2', 'IM3a', 'FL']
