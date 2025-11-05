@@ -1,0 +1,134 @@
+service: gr-cup-analytics
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: python3.9
+  region: us-east-1
+  stage: ${opt:stage, 'dev'}
+  memorySize: 512
+  timeout: 30
+  
+  environment:
+    STAGE: ${self:provider.stage}
+    REGION: ${self:provider.region}
+    
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - s3:GetObject
+            - s3:PutObject
+            - s3:DeleteObject
+          Resource: 
+            - "arn:aws:s3:::gr-cup-data-${self:provider.stage}/*"
+        - Effect: Allow
+          Action:
+            - dynamodb:Query
+            - dynamodb:Scan
+            - dynamodb:GetItem
+            - dynamodb:PutItem
+            - dynamodb:UpdateItem
+            - dynamodb:DeleteItem
+          Resource:
+            - "arn:aws:dynamodb:${self:provider.region}:*:table/gr-cup-telemetry-${self:provider.stage}"
+
+functions:
+  api:
+    handler: src/api/lambda_handler.lambda_handler
+    events:
+      - http:
+          path: /{proxy+}
+          method: ANY
+          cors: true
+      - http:
+          path: /
+          method: ANY
+          cors: true
+    environment:
+      PYTHONPATH: /var/task/src
+
+  telemetry-processor:
+    handler: src/processors/telemetry_processor.lambda_handler
+    events:
+      - s3:
+          bucket: gr-cup-data-${self:provider.stage}
+          event: s3:ObjectCreated:*
+          rules:
+            - prefix: raw-telemetry/
+            - suffix: .csv
+
+  analytics-generator:
+    handler: src/processors/analytics_generator.lambda_handler
+    events:
+      - schedule: rate(1 hour)
+
+resources:
+  Resources:
+    # S3 Bucket for data storage
+    GRCupDataBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: gr-cup-data-${self:provider.stage}
+        CorsConfiguration:
+          CorsRules:
+            - AllowedHeaders: ['*']
+              AllowedMethods: [GET, PUT, POST, DELETE, HEAD]
+              AllowedOrigins: ['*']
+              MaxAge: 3000
+
+    # DynamoDB table for telemetry metadata
+    GRCupTelemetryTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: gr-cup-telemetry-${self:provider.stage}
+        BillingMode: PAY_PER_REQUEST
+        AttributeDefinitions:
+          - AttributeName: track_id
+            AttributeType: S
+          - AttributeName: timestamp
+            AttributeType: S
+        KeySchema:
+          - AttributeName: track_id
+            KeyType: HASH
+          - AttributeName: timestamp
+            KeyType: RANGE
+
+    # CloudFront distribution for web app
+    GRCupCloudFront:
+      Type: AWS::CloudFront::Distribution
+      Properties:
+        DistributionConfig:
+          Enabled: true
+          DefaultRootObject: index.html
+          Origins:
+            - Id: S3Origin
+              DomainName: !GetAtt GRCupDataBucket.DomainName
+              S3OriginConfig:
+                OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${GRCupOriginAccessIdentity}"
+          DefaultCacheBehavior:
+            TargetOriginId: S3Origin
+            ViewerProtocolPolicy: redirect-to-https
+            AllowedMethods: [GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE]
+            CachedMethods: [GET, HEAD, OPTIONS]
+            ForwardedValues:
+              QueryString: true
+              Headers: ['*']
+
+    # Origin Access Identity for CloudFront
+    GRCupOriginAccessIdentity:
+      Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
+      Properties:
+        CloudFrontOriginAccessIdentityConfig:
+          Comment: "OAI for GR Cup Analytics"
+
+plugins:
+  - serverless-python-requirements
+
+custom:
+  pythonRequirements:
+    dockerizePip: true
+    zip: true
+    slim: true

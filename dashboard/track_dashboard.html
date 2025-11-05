@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GR Cup Real-Time Analytics Dashboard</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #eb0a1e, #c41e3a);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto auto;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .track-selector {
+            grid-column: 1 / -1;
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+        }
+        
+        .track-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 15px;
+        }
+        
+        .track-btn {
+            background: #3a3a3a;
+            border: 2px solid #555;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+        }
+        
+        .track-btn:hover {
+            background: #eb0a1e;
+            border-color: #eb0a1e;
+            transform: translateY(-2px);
+        }
+        
+        .track-btn.active {
+            background: #eb0a1e;
+            border-color: #eb0a1e;
+        }
+        
+        .track-map-panel {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            position: relative;
+        }
+        
+        .live-data-panel {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .sector-analysis {
+            grid-column: 1 / -1;
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+        }
+        
+        .panel-title {
+            font-size: 1.5em;
+            margin-bottom: 15px;
+            color: #eb0a1e;
+            border-bottom: 2px solid #eb0a1e;
+            padding-bottom: 10px;
+        }
+        
+        .track-svg {
+            width: 100%;
+            height: 400px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            border: 1px solid #444;
+        }
+        
+        .sector-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .sector-card {
+            background: #3a3a3a;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border-left: 4px solid;
+        }
+        
+        .sector-card.s1 { border-left-color: #4285f4; }
+        .sector-card.s2 { border-left-color: #fbbc04; }
+        .sector-card.s3 { border-left-color: #ea4335; }
+        
+        .sector-time {
+            font-size: 2em;
+            font-weight: bold;
+            margin: 10px 0;
+        }
+        
+        .sector-delta {
+            font-size: 1.2em;
+            font-weight: bold;
+        }
+        
+        .sector-delta.positive { color: #ff4444; }
+        .sector-delta.negative { color: #44ff44; }
+        
+        .live-metrics {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .metric-card {
+            background: #3a3a3a;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: #eb0a1e;
+        }
+        
+        .metric-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+        
+        .racing-line {
+            stroke: #00ff00;
+            stroke-width: 3;
+            stroke-dasharray: 5,5;
+            fill: none;
+        }
+        
+        .track-outline {
+            stroke: #ffffff;
+            stroke-width: 4;
+            fill: none;
+        }
+        
+        .sector-s1 { stroke: #4285f4; stroke-width: 6; }
+        .sector-s2 { stroke: #fbbc04; stroke-width: 6; }
+        .sector-s3 { stroke: #ea4335; stroke-width: 6; }
+        
+        .timing-point {
+            fill: #ff0000;
+            r: 8;
+        }
+        
+        .car-position {
+            fill: #eb0a1e;
+            r: 10;
+            stroke: #ffffff;
+            stroke-width: 2;
+        }
+        
+        .speed-indicator {
+            opacity: 0.8;
+        }
+        
+        .pit-recommendation {
+            background: linear-gradient(135deg, #ff6b35, #f7931e);
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            text-align: center;
+        }
+        
+        .pit-action {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .pit-reasoning {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .live-indicator {
+            animation: pulse 2s infinite;
+            background: #44ff44;
+            color: #000;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            display: inline-block;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏁 GR Cup Real-Time Analytics</h1>
+        <div class="subtitle">
+            Live Race Strategy Dashboard
+            <span class="live-indicator">LIVE</span>
+        </div>
+    </div>
+    
+    <div class="dashboard-container">
+        <!-- Track Selector -->
+        <div class="track-selector">
+            <h2>Select Track</h2>
+            <div class="track-buttons">
+                <button class="track-btn active" data-track="BMP">Barber Motorsports Park</button>
+                <button class="track-btn" data-track="COTA">Circuit of the Americas</button>
+                <button class="track-btn" data-track="VIR">Virginia International Raceway</button>
+                <button class="track-btn" data-track="SEB">Sebring</button>
+                <button class="track-btn" data-track="SON">Sonoma</button>
+                <button class="track-btn" data-track="RA">Road America</button>
+                <button class="track-btn" data-track="INDY">Indianapolis</button>
+            </div>
+        </div>
+        
+        <!-- Track Map Panel -->
+        <div class="track-map-panel">
+            <div class="panel-title">Track Layout & Racing Line</div>
+            <svg class="track-svg" id="trackMap">
+                <!-- Track will be drawn here -->
+            </svg>
+            <div id="trackInfo">
+                <strong>Current Track:</strong> <span id="currentTrackName">Barber Motorsports Park</span><br>
+                <strong>Length:</strong> <span id="trackLength">2.4 km</span><br>
+                <strong>Corners:</strong> <span id="cornerCount">17</span><br>
+                <strong>Racing Line:</strong> <span style="color: #00ff00;">Green dashed line</span>
+            </div>
+        </div>
+        
+        <!-- Live Data Panel -->
+        <div class="live-data-panel">
+            <div class="panel-title">Live Telemetry</div>
+            <div class="live-metrics">
+                <div class="metric-card">
+                    <div class="metric-value" id="currentSpeed">162</div>
+                    <div class="metric-label">Speed (mph)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="currentLap">15</div>
+                    <div class="metric-label">Current Lap</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="tireAge">15</div>
+                    <div class="metric-label">Tire Age (laps)</div>
+                </div>
+                <div class="metric-card">
+                    <div class="metric-value" id="position">P3</div>
+                    <div class="metric-label">Position</div>
+                </div>
+            </div>
+            
+            <div class="pit-recommendation">
+                <div class="pit-action" id="pitAction">PIT IN 3 LAPS</div>
+                <div class="pit-reasoning" id="pitReasoning">
+                    Tire degradation detected. Optimal window approaching.
+                </div>
+            </div>
+        </div>
+        
+        <!-- Sector Analysis -->
+        <div class="sector-analysis">
+            <div class="panel-title">Sector Performance Analysis</div>
+            <div class="sector-grid">
+                <div class="sector-card s1">
+                    <h3>Sector 1 (IM1a + IM1)</h3>
+                    <div class="sector-time" id="s1Time">34.2s</div>
+                    <div class="sector-delta negative" id="s1Delta">-0.1s</div>
+                    <div>Entry & Acceleration</div>
+                </div>
+                <div class="sector-card s2">
+                    <h3>Sector 2 (IM2a + IM2)</h3>
+                    <div class="sector-time" id="s2Time">36.8s</div>
+                    <div class="sector-delta positive" id="s2Delta">+0.3s</div>
+                    <div>Technical Middle</div>
+                </div>
+                <div class="sector-card s3">
+                    <h3>Sector 3 (IM3a + FL)</h3>
+                    <div class="sector-time" id="s3Time">33.2s</div>
+                    <div class="sector-delta negative" id="s3Delta">-0.2s</div>
+                    <div>Final to Finish</div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 30px;">
+                <h3>Racing Line Coaching Tips:</h3>
+                <div id="coachingTips" style="margin-top: 15px; line-height: 1.6;">
+                    <div>• <strong>Turn 1:</strong> Late apex - brake deep, focus on exit speed</div>
+                    <div>• <strong>Sector 2:</strong> Technical section - maintain rhythm and flow</div>
+                    <div>• <strong>Final Corner:</strong> Early apex for straight-line speed</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Track configurations matching our extracted data
+        const trackConfigs = {
+            'BMP': {
+                name: 'Barber Motorsports Park',
+                length: '2.4 km',
+                corners: 17,
+                coordinates: generateTrackCoordinates('BMP'),
+                sectorTimes: { s1: 34.2, s2: 36.8, s3: 33.2 },
+                coachingTips: [
+                    'Turn 1: Late apex - brake deep, focus on exit speed',
+                    'Sector 2: Technical section with 17 corners - maintain rhythm',
+                    'Final sector: Early apex for main straight speed'
+                ]
+            },
+            'COTA': {
+                name: 'Circuit of the Americas',
+                length: '5.5 km',
+                corners: 20,
+                coordinates: generateTrackCoordinates('COTA'),
+                sectorTimes: { s1: 46.2, s2: 55.1, s3: 44.0 },
+                coachingTips: [
+                    'Turn 1: Massive elevation change - brake early',
+                    'Esses: Maintain momentum through S-curves',
+                    'Back straight: DRS zone - maximize exit speed'
+                ]
+            },
+            'VIR': {
+                name: 'Virginia International Raceway',
+                length: '5.3 km',
+                corners: 10,
+                coordinates: generateTrackCoordinates('VIR'),
+                sectorTimes: { s1: 42.8, s2: 51.4, s3: 48.4 },
+                coachingTips: [
+                    'Oak Tree: Fast sweeping corner - carry speed',
+                    'Roller Coaster: Elevation changes affect braking',
+                    'Final corners: Set up for long main straight'
+                ]
+            }
+        };
+        
+        let currentTrack = 'BMP';
+        let animationId;
+        
+        // Generate simplified track coordinates for visualization
+        function generateTrackCoordinates(trackId) {
+            const configs = {
+                'BMP': { 
+                    points: [
+                        {x: 100, y: 100}, {x: 200, y: 80}, {x: 350, y: 120},
+                        {x: 400, y: 200}, {x: 350, y: 280}, {x: 250, y: 320},
+                        {x: 150, y: 300}, {x: 80, y: 220}, {x: 100, y: 100}
+                    ],
+                    sectors: [
+                        { start: 0, end: 3, color: '#4285f4' },
+                        { start: 3, end: 6, color: '#fbbc04' },
+                        { start: 6, end: 9, color: '#ea4335' }
+                    ]
+                },
+                'COTA': {
+                    points: [
+                        {x: 100, y: 150}, {x: 150, y: 100}, {x: 250, y: 90},
+                        {x: 350, y: 120}, {x: 400, y: 180}, {x: 380, y: 250},
+                        {x: 320, y: 300}, {x: 220, y: 320}, {x: 120, y: 280},
+                        {x: 80, y: 220}, {x: 100, y: 150}
+                    ],
+                    sectors: [
+                        { start: 0, end: 4, color: '#4285f4' },
+                        { start: 4, end: 7, color: '#fbbc04' },
+                        { start: 7, end: 11, color: '#ea4335' }
+                    ]
+                },
+                'VIR': {
+                    points: [
+                        {x: 120, y: 120}, {x: 220, y: 100}, {x: 320, y: 130},
+                        {x: 380, y: 200}, {x: 350, y: 270}, {x: 280, y: 310},
+                        {x: 180, y: 300}, {x: 100, y: 250}, {x: 90, y: 180},
+                        {x: 120, y: 120}
+                    ],
+                    sectors: [
+                        { start: 0, end: 3, color: '#4285f4' },
+                        { start: 3, end: 6, color: '#fbbc04' },
+                        { start: 6, end: 10, color: '#ea4335' }
+                    ]
+                }
+            };
+            
+            return configs[trackId] || configs['BMP'];
+        }
+        
+        // Initialize dashboard
+        function initDashboard() {
+            drawTrack(currentTrack);
+            updateTrackInfo(currentTrack);
+            startLiveSimulation();
+            
+            // Track selector event listeners
+            document.querySelectorAll('.track-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.track-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentTrack = e.target.dataset.track;
+                    drawTrack(currentTrack);
+                    updateTrackInfo(currentTrack);
+                });
+            });
+        }
+        
+        // Draw track layout
+        function drawTrack(trackId) {
+            const svg = d3.select('#trackMap');
+            svg.selectAll('*').remove();
+            
+            const config = trackConfigs[trackId];
+            if (!config) return;
+            
+            const coords = config.coordinates;
+            const width = 500;
+            const height = 400;
+            
+            // Create line generator
+            const line = d3.line()
+                .x(d => d.x)
+                .y(d => d.y)
+                .curve(d3.curveCardinal);
+            
+            // Draw track outline
+            svg.append('path')
+                .datum(coords.points)
+                .attr('class', 'track-outline')
+                .attr('d', line);
+            
+            // Draw sectors
+            coords.sectors.forEach(sector => {
+                const sectorPoints = coords.points.slice(sector.start, sector.end + 1);
+                svg.append('path')
+                    .datum(sectorPoints)
+                    .attr('d', line)
+                    .attr('stroke', sector.color)
+                    .attr('stroke-width', 8)
+                    .attr('fill', 'none')
+                    .attr('opacity', 0.7);
+            });
+            
+            // Draw racing line
+            svg.append('path')
+                .datum(coords.points)
+                .attr('class', 'racing-line')
+                .attr('d', line);
+            
+            // Add timing points
+            coords.points.forEach((point, i) => {
+                if (i % 3 === 0) {
+                    svg.append('circle')
+                        .attr('cx', point.x)
+                        .attr('cy', point.y)
+                        .attr('class', 'timing-point');
+                }
+            });
+            
+            // Add car position (animated)
+            const carPosition = svg.append('circle')
+                .attr('class', 'car-position')
+                .attr('cx', coords.points[0].x)
+                .attr('cy', coords.points[0].y);
+            
+            // Animate car around track
+            animateCarPosition(carPosition, coords.points);
+        }
+        
+        // Animate car position
+        function animateCarPosition(carElement, trackPoints) {
+            let currentPoint = 0;
+            
+            function moveToNextPoint() {
+                const point = trackPoints[currentPoint];
+                carElement
+                    .transition()
+                    .duration(1000)
+                    .attr('cx', point.x)
+                    .attr('cy', point.y)
+                    .on('end', () => {
+                        currentPoint = (currentPoint + 1) % trackPoints.length;
+                        setTimeout(moveToNextPoint, 100);
+                    });
+            }
+            
+            moveToNextPoint();
+        }
+        
+        // Update track information
+        function updateTrackInfo(trackId) {
+            const config = trackConfigs[trackId];
+            if (!config) return;
+            
+            document.getElementById('currentTrackName').textContent = config.name;
+            document.getElementById('trackLength').textContent = config.length;
+            document.getElementById('cornerCount').textContent = config.corners;
+            
+            // Update sector times
+            document.getElementById('s1Time').textContent = config.sectorTimes.s1.toFixed(1) + 's';
+            document.getElementById('s2Time').textContent = config.sectorTimes.s2.toFixed(1) + 's';
+            document.getElementById('s3Time').textContent = config.sectorTimes.s3.toFixed(1) + 's';
+            
+            // Update coaching tips
+            const tipsContainer = document.getElementById('coachingTips');
+            tipsContainer.innerHTML = config.coachingTips
+                .map(tip => `<div>• <strong>${tip}</strong></div>`)
+                .join('');
+        }
+        
+        // Simulate live data updates
+        function startLiveSimulation() {
+            let lap = 15;
+            let speed = 162;
+            let tireAge = 15;
+            
+            setInterval(() => {
+                // Simulate changing values
+                speed = 140 + Math.random() * 40;
+                
+                // Update every 10 seconds, increment lap
+                if (Math.random() < 0.1) {
+                    lap++;
+                    tireAge++;
+                }
+                
+                // Update display
+                document.getElementById('currentSpeed').textContent = Math.round(speed);
+                document.getElementById('currentLap').textContent = lap;
+                document.getElementById('tireAge').textContent = tireAge;
+                
+                // Update pit recommendation based on tire age
+                updatePitRecommendation(tireAge, lap);
+                
+                // Update sector deltas (simulate variation)
+                updateSectorDeltas();
+                
+            }, 1000);
+        }
+        
+        // Update pit recommendation
+        function updatePitRecommendation(tireAge, lap) {
+            const pitAction = document.getElementById('pitAction');
+            const pitReasoning = document.getElementById('pitReasoning');
+            
+            if (tireAge > 20) {
+                pitAction.textContent = 'PIT NOW';
+                pitReasoning.textContent = 'Tire degradation critical. Immediate pit stop recommended.';
+            } else if (tireAge > 15) {
+                const lapsToWait = Math.max(1, 22 - tireAge);
+                pitAction.textContent = `PIT IN ${lapsToWait} LAPS`;
+                pitReasoning.textContent = 'Tire degradation detected. Optimal window approaching.';
+            } else {
+                pitAction.textContent = 'STAY OUT';
+                pitReasoning.textContent = 'Tires performing well. Continue current stint.';
+            }
+        }
+        
+        // Update sector deltas with random variation
+        function updateSectorDeltas() {
+            const deltas = ['s1Delta', 's2Delta', 's3Delta'];
+            
+            deltas.forEach(deltaId => {
+                const element = document.getElementById(deltaId);
+                const delta = (Math.random() - 0.5) * 0.8;
+                const sign = delta >= 0 ? '+' : '';
+                
+                element.textContent = sign + delta.toFixed(1) + 's';
+                element.className = `sector-delta ${delta >= 0 ? 'positive' : 'negative'}`;
+            });
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initDashboard);
+    </script>
+</body>
+</html>

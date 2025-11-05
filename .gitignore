@@ -85,6 +85,37 @@ htmlcov/
 .coverage.*
 coverage.xml
 
+# Node.js and npm packages
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+package-lock.json
+yarn.lock
+
+# AWS deployment artifacts
+.serverless/
+.aws-sam/
+aws_deployment/.serverless/
+aws_deployment/node_modules/
+deployment_info_*.json
+
+# Generated analysis outputs
+telemetry_analysis/
+track_maps_output/
+real_track_maps/
+fixed_track_maps/
+deepracer_style_maps/
+accurate_track_maps/
+proper_track_maps/
+
+# AWS credentials and config (security)
+.aws/
+aws-exports.js
+
+# Serverless deployment packages
+*.zip
+
 # Keep directory structure but ignore contents
 !data/raw/.gitkeep
 !data/extracted/.gitkeep

@@ -1,0 +1,912 @@
+{
+  "BMP": {
+    "track_id": "BMP",
+    "track_name": "Barber Motorsports Park",
+    "expected_lap_time": 85.0,
+    "data_sources": {},
+    "sector_analysis": {
+      "sectors_found": [
+        "IM1a",
+        "IM1",
+        "IM2a",
+        "IM2",
+        "IM3a",
+        "FL"
+      ],
+      "total_laps": 125,
+      "unique_cars": 5,
+      "sector_characteristics": {
+        "IM1a": {
+          "min_time": 12.610765957907576,
+          "max_time": 19.124848021769377,
+          "avg_time": 15.789946482316461,
+          "std_dev": 1.8704724110877218,
+          "range": 6.514082063861801
+        },
+        "IM1": {
+          "min_time": 15.074531084545072,
+          "max_time": 22.970928023077192,
+          "avg_time": 18.9423186446429,
+          "std_dev": 2.23366661152811,
+          "range": 7.896396938532121
+        },
+        "IM2a": {
+          "min_time": 13.335285416437689,
+          "max_time": 20.303871507388383,
+          "avg_time": 16.848896101656432,
+          "std_dev": 1.9861920891074842,
+          "range": 6.968586090950694
+        },
+        "IM2": {
+          "min_time": 16.03900098458143,
+          "max_time": 24.214707062380057,
+          "avg_time": 19.998183959932625,
+          "std_dev": 2.37522008642941,
+          "range": 8.175706077798626
+        },
+        "IM3a": {
+          "min_time": 14.222040202181375,
+          "max_time": 21.52939367215403,
+          "avg_time": 17.889258561984924,
+          "std_dev": 2.1271546565102484,
+          "range": 7.307353469972654
+        },
+        "FL": {
+          "min_time": 12.652515910914902,
+          "max_time": 18.997602809250782,
+          "avg_time": 15.78932221178312,
+          "std_dev": 1.8567767285318546,
+          "range": 6.345086898335881
+        }
+      },
+      "fastest_sectors": {
+        "fastest": "FL",
+        "fastest_time": 15.78932221178312,
+        "slowest": "IM2",
+        "slowest_time": 19.998183959932625
+      },
+      "tire_degradation_by_sector": {},
+      "calculated_lap_time": 105.25792596231645
+    },
+    "telemetry_insights": {
+      "total_records": 12500,
+      "unique_cars": 5,
+      "lap_range": [
+        1,
+        25
+      ],
+      "speed_analysis": {
+        "min_speed": 127.1319282812958,
+        "max_speed": 194.70604624494788,
+        "avg_speed": 162.02784467565735,
+        "speed_range": 67.57411796365209,
+        "high_speed_percentage": 75.44
+      },
+      "braking_analysis": {
+        "max_brake_pressure": 117.76117802631715,
+        "avg_brake_pressure": 28.86065956472958,
+        "heavy_braking_percentage": 35.943999999999996,
+        "braking_zones": 4493
+      },
+      "steering_analysis": {
+        "max_steering_angle": 63.96536049703269,
+        "avg_steering_angle": 28.88444520918675,
+        "technical_percentage": 70.57600000000001
+      },
+      "gear_analysis": {
+        "gear_range": [
+          4,
+          6
+        ],
+        "most_used_gear": 5,
+        "gear_distribution": {
+          "5": 8164,
+          "4": 3070,
+          "6": 1266
+        }
+      }
+    },
+    "track_characteristics": {
+      "track_type": "HIGH_SPEED",
+      "difficulty_level": "HIGH",
+      "tire_wear_severity": "HIGH",
+      "key_features": [
+        "High-speed straights",
+        "Challenging for consistency",
+        "Heavy braking zones",
+        "Fastest sector: FL",
+        "Challenging sector: IM2"
+      ],
+      "racing_style": "POWER_FOCUSED"
+    },
+    "data_quality": {},
+    "lap_analysis": {
+      "total_laps": 125,
+      "fastest_lap": 83.82203300302643,
+      "slowest_lap": 128.13645124776565,
+      "average_lap": 105.41689290310453,
+      "lap_time_range": 44.314418244739215,
+      "consistency": 12.365009284536734
+    }
+  },
+  "COTA": {
+    "track_id": "COTA",
+    "track_name": "Circuit of the Americas",
+    "expected_lap_time": 125.0,
+    "data_sources": {},
+    "sector_analysis": {
+      "sectors_found": [
+        "IM1a",
+        "IM1",
+        "IM2a",
+        "IM2",
+        "IM3a",
+        "FL"
+      ],
+      "total_laps": 125,
+      "unique_cars": 5,
+      "sector_characteristics": {
+        "IM1a": {
+          "min_time": 18.262740850389772,
+          "max_time": 28.185287758302568,
+          "avg_time": 23.272696958264472,
+          "std_dev": 2.749684213877675,
+          "range": 9.922546907912796
+        },
+        "IM1": {
+          "min_time": 21.94022055458661,
+          "max_time": 33.79874922488982,
+          "avg_time": 27.924423294200583,
+          "std_dev": 3.2711190436102084,
+          "range": 11.858528670303208
+        },
+        "IM2a": {
+          "min_time": 19.6336952003444,
+          "max_time": 30.0387054036941,
+          "avg_time": 24.820236405074798,
+          "std_dev": 2.9184096002620605,
+          "range": 10.4050102033497
+        },
+        "IM2": {
+          "min_time": 23.19488363974424,
+          "max_time": 35.73815379473112,
+          "avg_time": 29.481529664939007,
+          "std_dev": 3.475128330822799,
+          "range": 12.543270154986878
+        },
+        "IM3a": {
+          "min_time": 20.94070346082184,
+          "max_time": 32.05320410348381,
+          "avg_time": 26.363680640074225,
+          "std_dev": 3.0972309081391383,
+          "range": 11.112500642661967
+        },
+        "FL": {
+          "min_time": 18.37051512618264,
+          "max_time": 28.187132371048712,
+          "avg_time": 23.26337268469275,
+          "std_dev": 2.718326427300375,
+          "range": 9.816617244866073
+        }
+      },
+      "fastest_sectors": {
+        "fastest": "FL",
+        "fastest_time": 23.26337268469275,
+        "slowest": "IM2",
+        "slowest_time": 29.481529664939007
+      },
+      "tire_degradation_by_sector": {},
+      "calculated_lap_time": 155.12593964724581
+    },
+    "telemetry_insights": {
+      "total_records": 12500,
+      "unique_cars": 5,
+      "lap_range": [
+        1,
+        25
+      ],
+      "speed_analysis": {
+        "min_speed": 128.76114715618024,
+        "max_speed": 195.6391557191684,
+        "avg_speed": 162.05024138095052,
+        "speed_range": 66.87800856298816,
+        "high_speed_percentage": 75.44800000000001
+      },
+      "braking_analysis": {
+        "max_brake_pressure": 120.8769752718343,
+        "avg_brake_pressure": 28.851090403634235,
+        "heavy_braking_percentage": 35.968,
+        "braking_zones": 4496
+      },
+      "steering_analysis": {
+        "max_steering_angle": 61.58114592148042,
+        "avg_steering_angle": 28.79907000420202,
+        "technical_percentage": 70.44
+      },
+      "gear_analysis": {
+        "gear_range": [
+          4,
+          6
+        ],
+        "most_used_gear": 5,
+        "gear_distribution": {
+          "5": 8145,
+          "4": 3069,
+          "6": 1286
+        }
+      }
+    },
+    "track_characteristics": {
+      "track_type": "HIGH_SPEED",
+      "difficulty_level": "HIGH",
+      "tire_wear_severity": "HIGH",
+      "key_features": [
+        "High-speed straights",
+        "Challenging for consistency",
+        "Heavy braking zones",
+        "Fastest sector: FL",
+        "Challenging sector: IM2"
+      ],
+      "racing_style": "POWER_FOCUSED"
+    },
+    "data_quality": {},
+    "lap_analysis": {
+      "total_laps": 125,
+      "fastest_lap": 122.68234682477244,
+      "slowest_lap": 187.2968711657655,
+      "average_lap": 155.23265102437412,
+      "lap_time_range": 64.61452434099307,
+      "consistency": 18.27266911811683
+    }
+  },
+  "INDY": {
+    "track_id": "INDY",
+    "track_name": "Indianapolis Motor Speedway",
+    "expected_lap_time": 95.0,
+    "data_sources": {},
+    "sector_analysis": {
+      "sectors_found": [
+        "IM1a",
+        "IM1",
+        "IM2a",
+        "IM2",
+        "IM3a",
+        "FL"
+      ],
+      "total_laps": 125,
+      "unique_cars": 5,
+      "sector_characteristics": {
+        "IM1a": {
+          "min_time": 14.190809532844986,
+          "max_time": 21.399845043415564,
+          "avg_time": 17.679012204195978,
+          "std_dev": 2.083930073830922,
+          "range": 7.209035510570578
+        },
+        "IM1": {
+          "min_time": 17.016804589341145,
+          "max_time": 25.903354034851493,
+          "avg_time": 21.22326280513084,
+          "std_dev": 2.5209714458237693,
+          "range": 8.886549445510347
+        },
+        "IM2a": {
+          "min_time": 14.97882119134001,
+          "max_time": 22.846237695395324,
+          "avg_time": 18.882039638851246,
+          "std_dev": 2.2319241776450927,
+          "range": 7.8674165040553135
+        },
+        "IM2": {
+          "min_time": 17.971336150952606,
+          "max_time": 27.04519522178024,
+          "avg_time": 22.38362610234769,
+          "std_dev": 2.647143757277648,
+          "range": 9.073859070827634
+        },
+        "IM3a": {
+          "min_time": 16.08968960037168,
+          "max_time": 24.254265118661863,
+          "avg_time": 20.053460742252152,
+          "std_dev": 2.364837498144029,
+          "range": 8.164575518290182
+        },
+        "FL": {
+          "min_time": 14.133373749540064,
+          "max_time": 21.448169376330817,
+          "avg_time": 17.69217871553229,
+          "std_dev": 2.110667960330847,
+          "range": 7.314795626790753
+        }
+      },
+      "fastest_sectors": {
+        "fastest": "IM1a",
+        "fastest_time": 17.679012204195978,
+        "slowest": "IM2",
+        "slowest_time": 22.38362610234769
+      },
+      "tire_degradation_by_sector": {},
+      "calculated_lap_time": 117.91358020831021
+    },
+    "telemetry_insights": {
+      "total_records": 12500,
+      "unique_cars": 5,
+      "lap_range": [
+        1,
+        25
+      ],
+      "speed_analysis": {
+        "min_speed": 128.6071937850572,
+        "max_speed": 195.7808656200698,
+        "avg_speed": 161.9926118477497,
+        "speed_range": 67.17367183501258,
+        "high_speed_percentage": 75.064
+      },
+      "braking_analysis": {
+        "max_brake_pressure": 112.94671038087768,
+        "avg_brake_pressure": 28.80593625219979,
+        "heavy_braking_percentage": 35.96,
+        "braking_zones": 4495
+      },
+      "steering_analysis": {
+        "max_steering_angle": 60.77255363944193,
+        "avg_steering_angle": 28.75440999947704,
+        "technical_percentage": 70.624
+      },
+      "gear_analysis": {
+        "gear_range": [
+          4,
+          6
+        ],
+        "most_used_gear": 5,
+        "gear_distribution": {
+          "5": 8102,
+          "4": 3117,
+          "6": 1281
+        }
+      }
+    },
+    "track_characteristics": {
+      "track_type": "HIGH_SPEED",
+      "difficulty_level": "HIGH",
+      "tire_wear_severity": "HIGH",
+      "key_features": [
+        "High-speed straights",
+        "Challenging for consistency",
+        "Heavy braking zones",
+        "Fastest sector: IM1a",
+        "Challenging sector: IM2"
+      ],
+      "racing_style": "POWER_FOCUSED"
+    },
+    "data_quality": {},
+    "lap_analysis": {
+      "total_laps": 125,
+      "fastest_lap": 94.28630238450704,
+      "slowest_lap": 142.83814343685157,
+      "average_lap": 117.75865329536147,
+      "lap_time_range": 48.55184105234453,
+      "consistency": 13.861107137088064
+    }
+  },
+  "RA": {
+    "track_id": "RA",
+    "track_name": "Road America",
+    "expected_lap_time": 140.0,
+    "data_sources": {},
+    "sector_analysis": {
+      "sectors_found": [
+        "IM1a",
+        "IM1",
+        "IM2a",
+        "IM2",
+        "IM3a",
+        "FL"
+      ],
+      "total_laps": 125,
+      "unique_cars": 5,
+      "sector_characteristics": {
+        "IM1a": {
+          "min_time": 20.873304293635297,
+          "max_time": 31.6780519063324,
+          "avg_time": 26.06977933724637,
+          "std_dev": 3.073994116297752,
+          "range": 10.804747612697103
+        },
+        "IM1": {
+          "min_time": 24.82315972176617,
+          "max_time": 38.085074196120885,
+          "avg_time": 31.28392516868255,
+          "std_dev": 3.6764896145478376,
+          "range": 13.261914474354715
+        },
+        "IM2a": {
+          "min_time": 22.00723929973085,
+          "max_time": 33.962805771155544,
+          "avg_time": 27.79941613640756,
+          "std_dev": 3.270550173769106,
+          "range": 11.955566471424696
+        },
+        "IM2": {
+          "min_time": 26.213850757197903,
+          "max_time": 40.12967403238388,
+          "avg_time": 33.03073954037491,
+          "std_dev": 3.867263255293345,
+          "range": 13.915823275185979
+        },
+        "IM3a": {
+          "min_time": 23.49044305354385,
+          "max_time": 35.802792613912,
+          "avg_time": 29.545034985773484,
+          "std_dev": 3.4543849004821645,
+          "range": 12.312349560368148
+        },
+        "FL": {
+          "min_time": 20.658212069477987,
+          "max_time": 31.646009002716895,
+          "avg_time": 26.066670543372588,
+          "std_dev": 3.078977170419191,
+          "range": 10.987796933238908
+        }
+      },
+      "fastest_sectors": {
+        "fastest": "FL",
+        "fastest_time": 26.066670543372588,
+        "slowest": "IM2",
+        "slowest_time": 33.03073954037491
+      },
+      "tire_degradation_by_sector": {},
+      "calculated_lap_time": 173.79556571185748
+    },
+    "telemetry_insights": {
+      "total_records": 12500,
+      "unique_cars": 5,
+      "lap_range": [
+        1,
+        25
+      ],
+      "speed_analysis": {
+        "min_speed": 129.08465624008016,
+        "max_speed": 196.7305317115408,
+        "avg_speed": 162.07102894927357,
+        "speed_range": 67.64587547146064,
+        "high_speed_percentage": 75.4
+      },
+      "braking_analysis": {
+        "max_brake_pressure": 112.05102653048093,
+        "avg_brake_pressure": 28.84981034247026,
+        "heavy_braking_percentage": 35.96,
+        "braking_zones": 4495
+      },
+      "steering_analysis": {
+        "max_steering_angle": 62.21020383077099,
+        "avg_steering_angle": 28.841576343068052,
+        "technical_percentage": 70.328
+      },
+      "gear_analysis": {
+        "gear_range": [
+          4,
+          6
+        ],
+        "most_used_gear": 5,
+        "gear_distribution": {
+          "5": 8156,
+          "4": 3075,
+          "6": 1269
+        }
+      }
+    },
+    "track_characteristics": {
+      "track_type": "HIGH_SPEED",
+      "difficulty_level": "HIGH",
+      "tire_wear_severity": "HIGH",
+      "key_features": [
+        "High-speed straights",
+        "Challenging for consistency",
+        "Heavy braking zones",
+        "Fastest sector: FL",
+        "Challenging sector: IM2"
+      ],
+      "racing_style": "POWER_FOCUSED"
+    },
+    "data_quality": {},
+    "lap_analysis": {
+      "total_laps": 125,
+      "fastest_lap": 138.0569314531383,
+      "slowest_lap": 211.2293244435022,
+      "average_lap": 173.95759077615728,
+      "lap_time_range": 73.1723929903639,
+      "consistency": 20.42297588464202
+    }
+  },
+  "SEB": {
+    "track_id": "SEB",
+    "track_name": "Sebring International Raceway",
+    "expected_lap_time": 130.0,
+    "data_sources": {},
+    "sector_analysis": {
+      "sectors_found": [
+        "IM1a",
+        "IM1",
+        "IM2a",
+        "IM2",
+        "IM3a",
+        "FL"
+      ],
+      "total_laps": 125,
+      "unique_cars": 5,
+      "sector_characteristics": {
+        "IM1a": {
+          "min_time": 19.27988519425833,
+          "max_time": 29.455425461204985,
+          "avg_time": 24.20780905007452,
+          "std_dev": 2.805608103568095,
+          "range": 10.175540266946655
+        },
+        "IM1": {
+          "min_time": 23.07657143330915,
+          "max_time": 35.30087649465422,
+          "avg_time": 29.0379220669819,
+          "std_dev": 3.3594909935671082,
+          "range": 12.224305061345067
+        },
+        "IM2a": {
+          "min_time": 20.509402295516708,
+          "max_time": 31.288859458684996,
+          "avg_time": 25.810325619926047,
+          "std_dev": 2.9924201696942614,
+          "range": 10.779457163168289
+        },
+        "IM2": {
+          "min_time": 24.44114508518969,
+          "max_time": 37.19684665397076,
+          "avg_time": 30.667660533979937,
+          "std_dev": 3.562866751804271,
+          "range": 12.75570156878107
+        },
+        "IM3a": {
+          "min_time": 21.808949544529195,
+          "max_time": 33.41958647081022,
+          "avg_time": 27.415506162094236,
+          "std_dev": 3.1807354064188242,
+          "range": 11.610636926281028
+        },
+        "FL": {
+          "min_time": 19.156524409080557,
+          "max_time": 29.269506382814857,
+          "avg_time": 24.196985743947415,
+          "std_dev": 2.8218529481985994,
+          "range": 10.1129819737343
+        }
+      },
+      "fastest_sectors": {
+        "fastest": "FL",
+        "fastest_time": 24.196985743947415,
+        "slowest": "IM2",
+        "slowest_time": 30.667660533979937
+      },
+      "tire_degradation_by_sector": {},
+      "calculated_lap_time": 161.33620917700406
+    },
+    "telemetry_insights": {
+      "total_records": 12500,
+      "unique_cars": 5,
+      "lap_range": [
+        1,
+        25
+      ],
+      "speed_analysis": {
+        "min_speed": 126.62151362779534,
+        "max_speed": 196.50962636495257,
+        "avg_speed": 162.026619344303,
+        "speed_range": 69.88811273715723,
+        "high_speed_percentage": 75.384
+      },
+      "braking_analysis": {
+        "max_brake_pressure": 119.01548019318535,
+        "avg_brake_pressure": 28.83591186777915,
+        "heavy_braking_percentage": 35.968,
+        "braking_zones": 4496
+      },
+      "steering_analysis": {
+        "max_steering_angle": 61.07756969908025,
+        "avg_steering_angle": 28.8431586211762,
+        "technical_percentage": 70.928
+      },
+      "gear_analysis": {
+        "gear_range": [
+          4,
+          6
+        ],
+        "most_used_gear": 5,
+        "gear_distribution": {
+          "5": 8132,
+          "4": 3077,
+          "6": 1291
+        }
+      }
+    },
+    "track_characteristics": {
+      "track_type": "HIGH_SPEED",
+      "difficulty_level": "HIGH",
+      "tire_wear_severity": "HIGH",
+      "key_features": [
+        "High-speed straights",
+        "Challenging for consistency",
+        "Heavy braking zones",
+        "Fastest sector: FL",
+        "Challenging sector: IM2"
+      ],
+      "racing_style": "POWER_FOCUSED"
+    },
+    "data_quality": {},
+    "lap_analysis": {
+      "total_laps": 125,
+      "fastest_lap": 127.63226955799831,
+      "slowest_lap": 194.408626506934,
+      "average_lap": 160.90327172065048,
+      "lap_time_range": 66.7763569489357,
+      "consistency": 18.65648179583441
+    }
+  },
+  "SON": {
+    "track_id": "SON",
+    "track_name": "Sonoma Raceway",
+    "expected_lap_time": 105.0,
+    "data_sources": {},
+    "sector_analysis": {
+      "sectors_found": [
+        "IM1a",
+        "IM1",
+        "IM2a",
+        "IM2",
+        "IM3a",
+        "FL"
+      ],
+      "total_laps": 125,
+      "unique_cars": 5,
+      "sector_characteristics": {
+        "IM1a": {
+          "min_time": 15.416857321701434,
+          "max_time": 23.78615353953618,
+          "avg_time": 19.556624693338744,
+          "std_dev": 2.27715699750414,
+          "range": 8.369296217834746
+        },
+        "IM1": {
+          "min_time": 18.66511370116497,
+          "max_time": 28.467536753431027,
+          "avg_time": 23.464870364681264,
+          "std_dev": 2.7331922098496073,
+          "range": 9.802423052266057
+        },
+        "IM2a": {
+          "min_time": 16.66848701284349,
+          "max_time": 25.33250592134568,
+          "avg_time": 20.85245014820376,
+          "std_dev": 2.437930499891902,
+          "range": 8.66401890850219
+        },
+        "IM2": {
+          "min_time": 19.652363456312543,
+          "max_time": 30.100325440799104,
+          "avg_time": 24.778446324290048,
+          "std_dev": 2.897746059753127,
+          "range": 10.447961984486561
+        },
+        "IM3a": {
+          "min_time": 17.639078309554126,
+          "max_time": 26.81731718782719,
+          "avg_time": 22.160556818145785,
+          "std_dev": 2.5969315799489765,
+          "range": 9.178238878273064
+        },
+        "FL": {
+          "min_time": 15.626398731528248,
+          "max_time": 23.761190495631567,
+          "avg_time": 19.554635286011194,
+          "std_dev": 2.2868634773650305,
+          "range": 8.13479176410332
+        }
+      },
+      "fastest_sectors": {
+        "fastest": "FL",
+        "fastest_time": 19.554635286011194,
+        "slowest": "IM2",
+        "slowest_time": 24.778446324290048
+      },
+      "tire_degradation_by_sector": {},
+      "calculated_lap_time": 130.3675836346708
+    },
+    "telemetry_insights": {
+      "total_records": 12500,
+      "unique_cars": 5,
+      "lap_range": [
+        1,
+        25
+      ],
+      "speed_analysis": {
+        "min_speed": 128.29535794300833,
+        "max_speed": 196.2224098370082,
+        "avg_speed": 161.8907011150375,
+        "speed_range": 67.92705189399987,
+        "high_speed_percentage": 74.224
+      },
+      "braking_analysis": {
+        "max_brake_pressure": 113.59781494227067,
+        "avg_brake_pressure": 28.874225153655242,
+        "heavy_braking_percentage": 35.936,
+        "braking_zones": 4492
+      },
+      "steering_analysis": {
+        "max_steering_angle": 60.0516200835232,
+        "avg_steering_angle": 28.813099530817844,
+        "technical_percentage": 70.16799999999999
+      },
+      "gear_analysis": {
+        "gear_range": [
+          4,
+          6
+        ],
+        "most_used_gear": 5,
+        "gear_distribution": {
+          "5": 8032,
+          "4": 3222,
+          "6": 1246
+        }
+      }
+    },
+    "track_characteristics": {
+      "track_type": "HIGH_SPEED",
+      "difficulty_level": "HIGH",
+      "tire_wear_severity": "HIGH",
+      "key_features": [
+        "High-speed straights",
+        "Challenging for consistency",
+        "Heavy braking zones",
+        "Fastest sector: FL",
+        "Challenging sector: IM2"
+      ],
+      "racing_style": "POWER_FOCUSED"
+    },
+    "data_quality": {},
+    "lap_analysis": {
+      "total_laps": 125,
+      "fastest_lap": 103.7217507005706,
+      "slowest_lap": 158.49401276162712,
+      "average_lap": 130.25073084620675,
+      "lap_time_range": 54.77226206105652,
+      "consistency": 15.376399371796762
+    }
+  },
+  "VIR": {
+    "track_id": "VIR",
+    "track_name": "Virginia International Raceway",
+    "expected_lap_time": 115.0,
+    "data_sources": {},
+    "sector_analysis": {
+      "sectors_found": [
+        "IM1a",
+        "IM1",
+        "IM2a",
+        "IM2",
+        "IM3a",
+        "FL"
+      ],
+      "total_laps": 125,
+      "unique_cars": 5,
+      "sector_characteristics": {
+        "IM1a": {
+          "min_time": 16.951089350132552,
+          "max_time": 25.85379632809766,
+          "avg_time": 21.399510943806387,
+          "std_dev": 2.5348234551116833,
+          "range": 8.902706977965106
+        },
+        "IM1": {
+          "min_time": 20.33157936185557,
+          "max_time": 30.995522989909112,
+          "avg_time": 25.687141187897492,
+          "std_dev": 3.048582165747526,
+          "range": 10.663943628053541
+        },
+        "IM2a": {
+          "min_time": 18.15037402820231,
+          "max_time": 27.59323229896434,
+          "avg_time": 22.83142465099102,
+          "std_dev": 2.6918158803470487,
+          "range": 9.44285827076203
+        },
+        "IM2": {
+          "min_time": 21.397337750583485,
+          "max_time": 32.7559113320631,
+          "avg_time": 27.107746847176276,
+          "std_dev": 3.223575087716581,
+          "range": 11.358573581479614
+        },
+        "IM3a": {
+          "min_time": 19.227847571661343,
+          "max_time": 29.30711592405603,
+          "avg_time": 24.254311197232944,
+          "std_dev": 2.8718883741310854,
+          "range": 10.079268352394688
+        },
+        "FL": {
+          "min_time": 16.90230669267976,
+          "max_time": 25.839405779860307,
+          "avg_time": 21.407925522306677,
+          "std_dev": 2.540590504238612,
+          "range": 8.937099087180549
+        }
+      },
+      "fastest_sectors": {
+        "fastest": "IM1a",
+        "fastest_time": 21.399510943806387,
+        "slowest": "IM2",
+        "slowest_time": 27.107746847176276
+      },
+      "tire_degradation_by_sector": {},
+      "calculated_lap_time": 142.6880603494108
+    },
+    "telemetry_insights": {
+      "total_records": 12500,
+      "unique_cars": 5,
+      "lap_range": [
+        1,
+        25
+      ],
+      "speed_analysis": {
+        "min_speed": 129.96345299114955,
+        "max_speed": 198.90414063372825,
+        "avg_speed": 162.0041067177495,
+        "speed_range": 68.9406876425787,
+        "high_speed_percentage": 75.496
+      },
+      "braking_analysis": {
+        "max_brake_pressure": 115.11852538997334,
+        "avg_brake_pressure": 28.77012384028055,
+        "heavy_braking_percentage": 35.96,
+        "braking_zones": 4495
+      },
+      "steering_analysis": {
+        "max_steering_angle": 65.57081809991368,
+        "avg_steering_angle": 28.833865447014556,
+        "technical_percentage": 70.648
+      },
+      "gear_analysis": {
+        "gear_range": [
+          4,
+          6
+        ],
+        "most_used_gear": 5,
+        "gear_distribution": {
+          "5": 8225,
+          "4": 3063,
+          "6": 1212
+        }
+      }
+    },
+    "track_characteristics": {
+      "track_type": "HIGH_SPEED",
+      "difficulty_level": "HIGH",
+      "tire_wear_severity": "HIGH",
+      "key_features": [
+        "High-speed straights",
+        "Challenging for consistency",
+        "Heavy braking zones",
+        "Fastest sector: IM1a",
+        "Challenging sector: IM2"
+      ],
+      "racing_style": "POWER_FOCUSED"
+    },
+    "data_quality": {},
+    "lap_analysis": {
+      "total_laps": 125,
+      "fastest_lap": 113.1271445041859,
+      "slowest_lap": 173.15051018647202,
+      "average_lap": 142.62261018217237,
+      "lap_time_range": 60.02336568228611,
+      "consistency": 16.772376347336966
+    }
+  }
+}
