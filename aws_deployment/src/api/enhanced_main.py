@@ -946,7 +946,7 @@ def lambda_handler(event, context):
                     // Create clear, coaching-focused sector analysis
                     let sectorHtml = `
                         <div class="alert alert-primary mb-3">
-                            <h6 class="mb-2"><i class="fas fa-flag-checkered"></i> Track Performance Report</h6>
+                            <h6 class="mb-2">Track Performance Report</h6>
                             <small>Analysis of your performance in each track section</small>
                         </div>
                     `;
@@ -969,17 +969,17 @@ def lambda_handler(event, context):
                             if (speedDiff > 3) {
                                 status = 'STRONG SECTOR';
                                 statusColor = 'success';
-                                statusIcon = '🟢';
+                                statusIcon = '[STRONG]';
                                 timeGain = `+${(speedDiff * 0.1).toFixed(2)}s advantage`;
                             } else if (speedDiff > -3) {
                                 status = 'COMPETITIVE';
                                 statusColor = 'warning';
-                                statusIcon = '🟡';
+                                statusIcon = '[OK]';
                                 timeGain = 'Matching field pace';
                             } else {
                                 status = 'NEEDS WORK';
                                 statusColor = 'danger';
-                                statusIcon = '🔴';
+                                statusIcon = '[FOCUS]';
                                 timeGain = `${Math.abs(speedDiff * 0.1).toFixed(2)}s time loss`;
                             }
                             
@@ -1057,7 +1057,7 @@ def lambda_handler(event, context):
                         
                         sectorHtml += `
                             <div class="alert alert-info mt-3">
-                                <h6><i class="fas fa-lightbulb"></i> Next Session Focus</h6>
+                                <h6>Next Session Focus</h6>
                                 <p class="mb-1"><strong>Priority:</strong> Work on ${worstSector} (${sectorNames[worstSector]})</p>
                                 <p class="mb-1"><strong>Potential Gain:</strong> Up to ${potentialGain.toFixed(2)} seconds per lap</p>
                                 <p class="mb-0"><strong>Strength:</strong> Build on ${bestSector} performance</p>
