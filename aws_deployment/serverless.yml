@@ -22,8 +22,10 @@ provider:
             - s3:GetObject
             - s3:PutObject
             - s3:DeleteObject
+            - s3:ListBucket
           Resource: 
-            - "arn:aws:s3:::gr-cup-data-${self:provider.stage}/*"
+            - "arn:aws:s3:::gr-cup-data-${self:provider.stage}-${self:provider.region}-v2/*"
+            - "arn:aws:s3:::gr-cup-data-${self:provider.stage}-${self:provider.region}-v2"
         - Effect: Allow
           Action:
             - dynamodb:Query
@@ -37,7 +39,7 @@ provider:
 
 functions:
   api:
-    handler: src/api/lambda_handler.lambda_handler
+    handler: src/api/enhanced_main.lambda_handler
     events:
       - http:
           path: /{proxy+}
@@ -71,7 +73,7 @@ resources:
     GRCupDataBucket:
       Type: AWS::S3::Bucket
       Properties:
-        BucketName: gr-cup-data-${self:provider.stage}
+        BucketName: gr-cup-data-${self:provider.stage}-${self:provider.region}-v2
         CorsConfiguration:
           CorsRules:
             - AllowedHeaders: ['*']
@@ -96,39 +98,14 @@ resources:
           - AttributeName: timestamp
             KeyType: RANGE
 
-    # CloudFront distribution for web app
-    GRCupCloudFront:
-      Type: AWS::CloudFront::Distribution
-      Properties:
-        DistributionConfig:
-          Enabled: true
-          DefaultRootObject: index.html
-          Origins:
-            - Id: S3Origin
-              DomainName: !GetAtt GRCupDataBucket.DomainName
-              S3OriginConfig:
-                OriginAccessIdentity: !Sub "origin-access-identity/cloudfront/${GRCupOriginAccessIdentity}"
-          DefaultCacheBehavior:
-            TargetOriginId: S3Origin
-            ViewerProtocolPolicy: redirect-to-https
-            AllowedMethods: [GET, HEAD, OPTIONS, PUT, POST, PATCH, DELETE]
-            CachedMethods: [GET, HEAD, OPTIONS]
-            ForwardedValues:
-              QueryString: true
-              Headers: ['*']
 
-    # Origin Access Identity for CloudFront
-    GRCupOriginAccessIdentity:
-      Type: AWS::CloudFront::CloudFrontOriginAccessIdentity
-      Properties:
-        CloudFrontOriginAccessIdentityConfig:
-          Comment: "OAI for GR Cup Analytics"
 
 plugins:
   - serverless-python-requirements
 
 custom:
   pythonRequirements:
-    dockerizePip: true
+    fileName: requirements_minimal.txt
+    dockerizePip: false
     zip: true
     slim: true

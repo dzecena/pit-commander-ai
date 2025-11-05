@@ -6,11 +6,12 @@ from fastapi import FastAPI, HTTPException, Query
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse, HTMLResponse
 from typing import List, Optional
-import pandas as pd
 import json
 import boto3
 from datetime import datetime
 import os
+import csv
+from io import StringIO
 
 app = FastAPI(
     title="GR Cup Analytics API",
