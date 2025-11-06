@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🏁 GR Cup Coaching Dashboard v2.5</title>
+    <title>🏁 GR Cup Coaching Dashboard v2.3</title>
     <style>
         * {
             margin: 0;
@@ -35,38 +35,6 @@
         .session-info {
             text-align: right;
             font-size: 0.9em;
-        }
-        
-        .nav-button {
-            background: rgba(255,255,255,0.1);
-            color: white;
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 4px;
-            font-size: 0.9em;
-            transition: background 0.3s;
-            display: inline-block;
-            margin-left: 10px;
-        }
-        
-        .nav-button:hover {
-            background: rgba(255,255,255,0.2);
-        }
-        
-        .drill-down-btn {
-            background: #eb0a1e;
-            color: white;
-            border: none;
-            padding: 5px 10px;
-            border-radius: 3px;
-            font-size: 0.8em;
-            cursor: pointer;
-            transition: background 0.3s;
-            margin-top: 5px;
-        }
-        
-        .drill-down-btn:hover {
-            background: #c41e3a;
         }
         
         .main-container {
@@ -349,17 +317,12 @@
     <div class="header">
         <div>
             <h1>🏁 GR Cup Coaching Dashboard</h1>
-            <div style="font-size: 0.8em; opacity: 0.8;">Version 2.5 - Clean Professional Interface</div>
+            <div style="font-size: 0.8em; opacity: 0.8;">Version 2.3 - Complete 5-Driver Analysis</div>
         </div>
         <div class="session-info">
-            <div><strong>Current Track:</strong> <span id="currentTrackName">Barber Motorsports Park</span></div>
-            <div style="margin-top: 8px;">
-                <a href="#" onclick="openDetailedAnalysis()" class="nav-button" title="Open detailed analysis dashboard">🔍 Detailed Analysis</a>
-                <a href="#" onclick="openDetailedAnalysis(selectedDriver, currentTrack)" class="nav-button" title="Open with current driver and track selected">📊 Current Selection</a>
-            </div>
-            <div style="font-size: 0.7em; opacity: 0.6; margin-top: 3px;">
-                Tip: Ctrl+D for quick access | Click driver cards for deep dive
-            </div>
+            <div><strong>Session:</strong> Practice 2</div>
+            <div><strong>Track:</strong> <span id="currentTrackName">Barber Motorsports Park</span></div>
+            <div><strong>Time:</strong> <span id="sessionTime">45:23</span></div>
         </div>
     </div>
     
@@ -884,9 +847,6 @@
                                 <span>${trackData.avgGear}</span>
                             </div>
                         </div>
-                        <button class="drill-down-btn" onclick="openDetailedAnalysis('${driverId}', '${currentTrack}'); event.stopPropagation();">
-                            🔍 Deep Dive
-                        </button>
                     `;
                 }
                 
@@ -925,9 +885,9 @@
                         <div class="metric-trend trend-down">P${trackData.position} Position</div>
                     </div>
                     <div class="metric-card">
-                        <div class="metric-value">${trackData.avgSpeed.toFixed(1)}</div>
+                        <div class="metric-value">${trackData.avgSpeed}</div>
                         <div class="metric-label">Avg Speed (mph)</div>
-                        <div class="metric-trend trend-up">Avg Gear: ${trackData.avgGear.toFixed(1)}</div>
+                        <div class="metric-trend trend-up">Avg Gear: ${trackData.avgGear}</div>
                     </div>
                     <div class="metric-card">
                         <div class="metric-value">${trackData.consistency}%</div>
@@ -949,12 +909,6 @@
                 <div class="comparison-chart">
                     <h4 style="color: #eb0a1e; margin-bottom: 10px;">vs. Session Leader (#002)</h4>
                     ${generateComparisonChart(trackData, driverData["002"].tracks[currentTrack])}
-                </div>
-                
-                <div style="text-align: center; margin-top: 15px;">
-                    <button class="drill-down-btn" onclick="openDetailedAnalysis('${driverId}', '${currentTrack}')" style="padding: 8px 15px; font-size: 0.9em;">
-                        🔍 View Detailed Analysis
-                    </button>
                 </div>
             `;
         }
@@ -1200,6 +1154,20 @@
         
         function startRealTimeUpdates() {
             setInterval(() => {
+                // Update session time
+                const sessionTime = document.getElementById('sessionTime');
+                const currentTime = sessionTime.textContent.split(':');
+                let minutes = parseInt(currentTime[0]);
+                let seconds = parseInt(currentTime[1]);
+                
+                seconds++;
+                if (seconds >= 60) {
+                    seconds = 0;
+                    minutes++;
+                }
+                
+                sessionTime.textContent = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+                
                 // Simulate minor performance changes
                 if (Math.random() < 0.2) {
                     Object.keys(driverData).forEach(driverId => {
@@ -1220,31 +1188,8 @@
                         updatePerformanceAnalysis(selectedDriver);
                     }
                 }
-            }, 5000); // Reduced frequency since no time display
+            }, 2000);
         }
-        
-        // Navigation functions
-        function openDetailedAnalysis(driverId = null, trackId = null) {
-            let url = 'detailed_analysis.html';
-            const params = new URLSearchParams();
-            
-            if (driverId) params.append('driver', driverId);
-            if (trackId) params.append('track', trackId);
-            
-            if (params.toString()) {
-                url += '?' + params.toString();
-            }
-            
-            window.open(url, '_blank');
-        }
-        
-        // Add keyboard shortcut for detailed analysis
-        document.addEventListener('keydown', function(event) {
-            if (event.ctrlKey && event.key === 'd') {
-                event.preventDefault();
-                openDetailedAnalysis(selectedDriver, currentTrack);
-            }
-        });
         
         // Initialize dashboard when page loads
         document.addEventListener('DOMContentLoaded', function() {

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>🏁 GR Cup Dashboard Deployment Test</title>
+    <style>
+        body { 
+            background: #1a1a1a; 
+            color: white; 
+            font-family: Arial, sans-serif; 
+            padding: 20px; 
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .test-section { 
+            margin: 30px 0; 
+            padding: 20px;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        .status-good { color: #00ff00; }
+        .status-bad { color: #ff0000; }
+        .status-pending { color: #ffaa00; }
+        .track-image { 
+            max-width: 300px; 
+            max-height: 200px; 
+            border: 2px solid #eb0a1e; 
+            margin: 10px;
+            border-radius: 4px;
+        }
+        .dashboard-link {
+            display: inline-block;
+            background: #eb0a1e;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        .dashboard-link:hover {
+            background: #c8091a;
+        }
+    </style>
+</head>
+<body>
+    <h1>🏁 GR Cup Dashboard Deployment Verification</h1>
+    
+    <div class="test-section">
+        <h2>📊 Dashboard Access Test</h2>
+        <p>Testing if the main dashboard is accessible...</p>
+        <div id="dashboardTest" class="status-pending">⏳ Testing dashboard access...</div>
+        <a href="https://gr-cup-data-dev-us-east-1-v2.s3.amazonaws.com/dashboard/track_dashboard.html" 
+           target="_blank" class="dashboard-link">
+           🚀 Open Live Dashboard
+        </a>
+    </div>
+    
+    <div class="test-section">
+        <h2>🖼️ Track Images Test</h2>
+        <p>Testing if track layout images load correctly...</p>
+        <div id="imageTests"></div>
+        <div id="imageGallery"></div>
+    </div>
+    
+    <div class="test-section">
+        <h2>📜 JavaScript Integration Test</h2>
+        <p>Testing if the track images JavaScript file loads...</p>
+        <div id="jsTest" class="status-pending">⏳ Testing JavaScript file...</div>
+    </div>
+
+    <script>
+        // Test track image URLs
+        const trackUrls = {
+            'BMP': 'https://gr-cup-data-dev-us-east-1-v2.s3.amazonaws.com/track-images/BMP_track_layout_web.png',
+            'COTA': 'https://gr-cup-data-dev-us-east-1-v2.s3.amazonaws.com/track-images/COTA_track_layout_web.png',
+            'VIR': 'https://gr-cup-data-dev-us-east-1-v2.s3.amazonaws.com/track-images/VIR_track_layout_web.png',
+            'SEB': 'https://gr-cup-data-dev-us-east-1-v2.s3.amazonaws.com/track-images/SEB_track_layout_web.png'
+        };
+        
+        const imageTests = document.getElementById('imageTests');
+        const imageGallery = document.getElementById('imageGallery');
+        let successCount = 0;
+        let totalTests = Object.keys(trackUrls).length;
+        
+        // Test each track image
+        Object.entries(trackUrls).forEach(([trackId, url]) => {
+            const testDiv = document.createElement('div');
+            testDiv.innerHTML = `<strong>${trackId}:</strong> <span class="status-pending">⏳ Loading...</span>`;
+            imageTests.appendChild(testDiv);
+            
+            const img = document.createElement('img');
+            img.className = 'track-image';
+            img.alt = `${trackId} Track Layout`;
+            
+            img.onload = function() {
+                testDiv.innerHTML = `<strong>${trackId}:</strong> <span class="status-good">✅ SUCCESS</span>`;
+                imageGallery.appendChild(img);
+                successCount++;
+                
+                if (successCount === totalTests) {
+                    imageTests.innerHTML += '<div style="margin-top: 20px;"><strong>All Images:</strong> <span class="status-good">✅ All track images loaded successfully!</span></div>';
+                }
+            };
+            
+            img.onerror = function() {
+                testDiv.innerHTML = `<strong>${trackId}:</strong> <span class="status-bad">❌ FAILED</span>`;
+            };
+            
+            img.src = url;
+        });
+        
+        // Test JavaScript file access
+        fetch('https://gr-cup-data-dev-us-east-1-v2.s3.amazonaws.com/dashboard/track_images_embedded.js')
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('jsTest').innerHTML = '<span class="status-good">✅ JavaScript file accessible</span>';
+                } else {
+                    document.getElementById('jsTest').innerHTML = '<span class="status-bad">❌ JavaScript file not accessible</span>';
+                }
+            })
+            .catch(error => {
+                document.getElementById('jsTest').innerHTML = '<span class="status-bad">❌ Error accessing JavaScript file</span>';
+            });
+        
+        // Test dashboard access
+        fetch('https://gr-cup-data-dev-us-east-1-v2.s3.amazonaws.com/dashboard/track_dashboard.html')
+            .then(response => {
+                if (response.ok) {
+                    document.getElementById('dashboardTest').innerHTML = '<span class="status-good">✅ Dashboard is accessible</span>';
+                } else {
+                    document.getElementById('dashboardTest').innerHTML = '<span class="status-bad">❌ Dashboard not accessible</span>';
+                }
+            })
+            .catch(error => {
+                document.getElementById('dashboardTest').innerHTML = '<span class="status-bad">❌ Error accessing dashboard</span>';
+            });
+    </script>
+</body>
+</html>

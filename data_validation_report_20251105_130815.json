@@ -1,0 +1,185 @@
+{
+  "validation_date": "2025-11-05T13:08:15.567456",
+  "local_files": {
+    "BMP": {
+      "file_size": 3616989,
+      "record_count": 12500,
+      "unique_drivers": 5,
+      "data_fingerprint": "d8968f36b1af",
+      "max_speed": 194.70604624494788,
+      "avg_speed": 162.02784467565735,
+      "first_timestamp": "1761847091636",
+      "last_timestamp": "1761847219713"
+    },
+    "COTA": {
+      "file_size": 3628667,
+      "record_count": 12500,
+      "unique_drivers": 5,
+      "data_fingerprint": "c7513d2d763d",
+      "max_speed": 195.6391557191684,
+      "avg_speed": 162.05024138095052,
+      "first_timestamp": "1761847092627",
+      "last_timestamp": "1761847277441"
+    },
+    "VIR": {
+      "file_size": 3703406,
+      "record_count": 12500,
+      "unique_drivers": 5,
+      "data_fingerprint": "847712d06225",
+      "max_speed": 198.90414063372825,
+      "avg_speed": 162.0041067177495,
+      "first_timestamp": "1761847100570",
+      "last_timestamp": "1761847265062"
+    },
+    "SEB": {
+      "file_size": 3691964,
+      "record_count": 12500,
+      "unique_drivers": 5,
+      "data_fingerprint": "cbb5d5c63bd8",
+      "max_speed": 196.50962636495257,
+      "avg_speed": 162.02661934430296,
+      "first_timestamp": "1761847097905",
+      "last_timestamp": "1761847279677"
+    },
+    "SON": {
+      "file_size": 3503790,
+      "record_count": 12500,
+      "unique_drivers": 5,
+      "data_fingerprint": "f5e7832d56b2",
+      "max_speed": 196.2224098370082,
+      "avg_speed": 161.8907011150375,
+      "first_timestamp": "1761847099394",
+      "last_timestamp": "1761847252544"
+    },
+    "RA": {
+      "file_size": 3466056,
+      "record_count": 12500,
+      "unique_drivers": 5,
+      "data_fingerprint": "7793a9227aec",
+      "max_speed": 196.7305317115408,
+      "avg_speed": 162.07102894927354,
+      "first_timestamp": "1761847096176",
+      "last_timestamp": "1761847309617"
+    },
+    "INDY": {
+      "file_size": 3679295,
+      "record_count": 12500,
+      "unique_drivers": 5,
+      "data_fingerprint": "be910839787a",
+      "max_speed": 195.7808656200698,
+      "avg_speed": 161.9926118477497,
+      "first_timestamp": "1761847094104",
+      "last_timestamp": "1761847233756"
+    }
+  },
+  "s3_files": {
+    "BMP": {
+      "record_count": 12500,
+      "data_fingerprint": "d8968f36b1af",
+      "max_speed": 194.70604624494788,
+      "avg_speed": 162.02784467565735,
+      "s3_size": 3616989
+    },
+    "COTA": {
+      "record_count": 12500,
+      "data_fingerprint": "c7513d2d763d",
+      "max_speed": 195.6391557191684,
+      "avg_speed": 162.05024138095052,
+      "s3_size": 3628667
+    },
+    "VIR": {
+      "record_count": 12500,
+      "data_fingerprint": "847712d06225",
+      "max_speed": 198.90414063372825,
+      "avg_speed": 162.0041067177495,
+      "s3_size": 3703406
+    },
+    "SEB": {
+      "record_count": 12500,
+      "data_fingerprint": "cbb5d5c63bd8",
+      "max_speed": 196.50962636495257,
+      "avg_speed": 162.02661934430296,
+      "s3_size": 3691964
+    },
+    "SON": {
+      "record_count": 12500,
+      "data_fingerprint": "f5e7832d56b2",
+      "max_speed": 196.2224098370082,
+      "avg_speed": 161.8907011150375,
+      "s3_size": 3503790
+    },
+    "RA": {
+      "record_count": 12500,
+      "data_fingerprint": "7793a9227aec",
+      "max_speed": 196.7305317115408,
+      "avg_speed": 162.07102894927354,
+      "s3_size": 3466056
+    },
+    "INDY": {
+      "record_count": 12500,
+      "data_fingerprint": "be910839787a",
+      "max_speed": 195.7808656200698,
+      "avg_speed": 161.9926118477497,
+      "s3_size": 3679295
+    }
+  },
+  "api_data": {
+    "BMP": {
+      "driver_count": 5,
+      "data_source": "real_telemetry",
+      "first_driver": "GR86-001-001 (Car #001)",
+      "max_speed": 194.7,
+      "avg_speed": 162.2,
+      "total_laps": 22
+    },
+    "COTA": {
+      "driver_count": 5,
+      "data_source": "real_telemetry",
+      "first_driver": "GR86-001-001 (Car #001)",
+      "max_speed": 194.3,
+      "avg_speed": 161.9,
+      "total_laps": 22
+    },
+    "VIR": {
+      "driver_count": 5,
+      "data_source": "real_telemetry",
+      "first_driver": "GR86-001-001 (Car #001)",
+      "max_speed": 194.9,
+      "avg_speed": 162.0,
+      "total_laps": 22
+    },
+    "SEB": {
+      "driver_count": 5,
+      "data_source": "real_telemetry",
+      "first_driver": "GR86-001-001 (Car #001)",
+      "max_speed": 196.4,
+      "avg_speed": 162.0,
+      "total_laps": 22
+    },
+    "SON": {
+      "driver_count": 5,
+      "data_source": "real_telemetry",
+      "first_driver": "GR86-001-001 (Car #001)",
+      "max_speed": 196.2,
+      "avg_speed": 161.8,
+      "total_laps": 22
+    },
+    "RA": {
+      "driver_count": 5,
+      "data_source": "real_telemetry",
+      "first_driver": "GR86-001-001 (Car #001)",
+      "max_speed": 192.6,
+      "avg_speed": 161.9,
+      "total_laps": 22
+    },
+    "INDY": {
+      "driver_count": 5,
+      "data_source": "real_telemetry",
+      "first_driver": "GR86-001-001 (Car #001)",
+      "max_speed": 194.1,
+      "avg_speed": 162.0,
+      "total_laps": 22
+    }
+  },
+  "dashboard_url": "https://13x5l5w5pi.execute-api.us-east-1.amazonaws.com/dev/dashboard"
+}

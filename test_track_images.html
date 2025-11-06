@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Track Images Test</title>
+    <style>
+        body { background: #1a1a1a; color: white; font-family: Arial; }
+        .track-container { margin: 20px; text-align: center; }
+        .track-image { max-width: 400px; max-height: 300px; border: 2px solid #eb0a1e; }
+        .track-selector { margin: 20px; }
+        button { margin: 5px; padding: 10px; background: #eb0a1e; color: white; border: none; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <h1>🏁 GR Cup Track Images Test</h1>
+    
+    <div class="track-selector">
+        <button onclick="showTrack('BMP')">Barber</button>
+        <button onclick="showTrack('COTA')">COTA</button>
+        <button onclick="showTrack('VIR')">VIR</button>
+        <button onclick="showTrack('SEB')">Sebring</button>
+        <button onclick="showTrack('SON')">Sonoma</button>
+        <button onclick="showTrack('RA')">Road America</button>
+        <button onclick="showTrack('INDY')">Indianapolis</button>
+    </div>
+    
+    <div class="track-container">
+        <h2 id="trackName">Select a track above</h2>
+        <img id="trackImage" class="track-image" src="" alt="Track Layout" style="display:none;" />
+        <div id="status">Track images ready!</div>
+    </div>
+
+    <script src="track_images/track_images.js"></script>
+    <script>
+        function showTrack(trackId) {
+            const trackNames = {
+                'BMP': 'Barber Motorsports Park',
+                'COTA': 'Circuit of the Americas', 
+                'VIR': 'Virginia International Raceway',
+                'SEB': 'Sebring International Raceway',
+                'SON': 'Sonoma Raceway',
+                'RA': 'Road America',
+                'INDY': 'Indianapolis Motor Speedway'
+            };
+            
+            if (typeof TRACK_IMAGES !== 'undefined' && TRACK_IMAGES[trackId]) {
+                document.getElementById('trackName').textContent = trackNames[trackId];
+                document.getElementById('trackImage').src = TRACK_IMAGES[trackId].image_data;
+                document.getElementById('trackImage').style.display = 'block';
+                document.getElementById('status').textContent = '✅ Real track layout loaded!';
+            } else {
+                document.getElementById('status').textContent = '❌ Track image not found';
+            }
+        }
+        
+        // Test if track images loaded
+        window.onload = function() {
+            if (typeof TRACK_IMAGES !== 'undefined') {
+                const trackCount = Object.keys(TRACK_IMAGES).length;
+                document.getElementById('status').textContent = `✅ ${trackCount} track images loaded successfully!`;
+            } else {
+                document.getElementById('status').textContent = '❌ Track images failed to load';
+            }
+        };
+    </script>
+</body>
+</html>

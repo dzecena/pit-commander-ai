@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏁 GR Cup Real-Time Analytics Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #1a1a1a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #eb0a1e, #c41e3a);
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .header .subtitle {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .dashboard-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto auto;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .panel {
+            background: #2a2a2a;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid #333;
+        }
+        
+        .panel h2 {
+            color: #eb0a1e;
+            margin-bottom: 15px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #eb0a1e;
+            padding-bottom: 10px;
+        }
+        
+        .track-layout {
+            grid-column: 1;
+            grid-row: 1 / 3;
+        }
+        
+        .telemetry {
+            grid-column: 2;
+            grid-row: 1;
+        }
+        
+        .strategy {
+            grid-column: 1 / 3;
+            grid-row: 3;
+        }
+        
+        .track-container {
+            width: 100%;
+            height: 400px;
+            background: #1a1a1a;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .track-image {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 8px;
+            object-fit: contain;
+        }
+        
+        .track-info {
+            margin-top: 15px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            font-size: 0.9em;
+        }
+        
+        .track-info div {
+            background: #333;
+            padding: 8px;
+            border-radius: 5px;
+        }
+        
+        .track-info strong {
+            color: #eb0a1e;
+        }
+        
+        .telemetry-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .telemetry-item {
+            background: #333;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .telemetry-value {
+            font-size: 2em;
+            font-weight: bold;
+            color: #eb0a1e;
+            margin-bottom: 5px;
+        }
+        
+        .telemetry-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .strategy-alert {
+            background: linear-gradient(135deg, #ff6b35, #eb0a1e);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        
+        .track-selector {
+            margin-bottom: 20px;
+        }
+        
+        .track-selector select {
+            background: #333;
+            color: white;
+            border: 1px solid #eb0a1e;
+            padding: 10px;
+            border-radius: 5px;
+            font-size: 1em;
+            width: 100%;
+        }
+        
+        .track-selector select:focus {
+            outline: none;
+            border-color: #ff6b35;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-live {
+            background: #00ff00;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .delta-time {
+            font-size: 0.8em;
+            margin-left: 10px;
+        }
+        
+        .delta-positive { color: #ff4444; }
+        .delta-negative { color: #44ff44; }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏁 GR Cup Real-Time Analytics Dashboard</h1>
+        <div class="subtitle">
+            <span class="status-indicator status-live"></span>
+            Live Race Data & Strategy Intelligence
+        </div>
+    </div>
+    
+    <div class="dashboard-container">
+        <!-- Track Layout Panel -->
+        <div class="panel track-layout">
+            <h2>Track Layout & Racing Line</h2>
+            
+            <div class="track-selector">
+                <select id="trackSelector">
+                    <option value="BMP">Barber Motorsports Park</option>
+                    <option value="COTA">Circuit of the Americas</option>
+                    <option value="VIR">Virginia International Raceway</option>
+                    <option value="SEB">Sebring International Raceway</option>
+                    <option value="SON">Sonoma Raceway</option>
+                    <option value="RA">Road America</option>
+                    <option value="INDY">Indianapolis Motor Speedway</option>
+                </select>
+            </div>
+            
+            <div class="track-container">
+                <img id="trackImage" class="track-image" src="" alt="Track Layout" />
+            </div>
+            
+            <div class="track-info">
+                <div><strong>Current Track:</strong> <span id="trackName">Barber Motorsports Park</span></div>
+                <div><strong>Length:</strong> <span id="trackLength">2.4 km</span></div>
+                <div><strong>Corners:</strong> <span id="trackCorners">17</span></div>
+                <div><strong>Status:</strong> <span style="color: #00ff00;">Real Track Layout</span></div>
+            </div>
+        </div>
+        
+        <!-- Live Telemetry Panel -->
+        <div class="panel telemetry">
+            <h2>Live Telemetry</h2>
+            
+            <div class="telemetry-grid">
+                <div class="telemetry-item">
+                    <div class="telemetry-value" id="speed">153</div>
+                    <div class="telemetry-label">Speed (mph)</div>
+                    <div class="delta-time delta-negative" id="speedDelta">-0.2</div>
+                </div>
+                
+                <div class="telemetry-item">
+                    <div class="telemetry-value" id="currentLap">16</div>
+                    <div class="telemetry-label">Current Lap</div>
+                </div>
+                
+                <div class="telemetry-item">
+                    <div class="telemetry-value" id="tireAge">16</div>
+                    <div class="telemetry-label">Tire Age (laps)</div>
+                    <div class="delta-time delta-positive" id="tireAgeDelta">+0.1</div>
+                </div>
+                
+                <div class="telemetry-item">
+                    <div class="telemetry-value" id="position">P3</div>
+                    <div class="telemetry-label">Position</div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Strategy Panel -->
+        <div class="panel strategy">
+            <h2>Pit Strategy Intelligence</h2>
+            
+            <div class="strategy-alert" id="strategyAlert">
+                PIT IN 6 LAPS
+                <div style="font-size: 0.8em; margin-top: 10px;">
+                    Tire degradation detected. Optimal window approaching.
+                </div>
+            </div>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px;">
+                <div style="background: #333; padding: 15px; border-radius: 8px;">
+                    <strong>Fuel Status:</strong><br>
+                    <span style="color: #00ff00;">82% Remaining</span>
+                </div>
+                
+                <div style="background: #333; padding: 15px; border-radius: 8px;">
+                    <strong>Tire Degradation:</strong><br>
+                    <span style="color: #ffaa00;">Medium (67%)</span>
+                </div>
+                
+                <div style="background: #333; padding: 15px; border-radius: 8px;">
+                    <strong>Gap to Leader:</strong><br>
+                    <span style="color: #eb0a1e;">+12.4s</span>
+                </div>
+                
+                <div style="background: #333; padding: 15px; border-radius: 8px;">
+                    <strong>Predicted Finish:</strong><br>
+                    <span style="color: #00ff00;">P2-P3</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="track_images_embedded.js"></script>
+    <script>
+        // Track configurations
+        const trackConfigs = {
+            'BMP': { name: 'Barber Motorsports Park', length: '2.4 km', corners: '17' },
+            'COTA': { name: 'Circuit of the Americas', length: '5.5 km', corners: '20' },
+            'VIR': { name: 'Virginia International Raceway', length: '5.2 km', corners: '23' },
+            'SEB': { name: 'Sebring International Raceway', length: '6.0 km', corners: '17' },
+            'SON': { name: 'Sonoma Raceway', length: '4.0 km', corners: '12' },
+            'RA': { name: 'Road America', length: '6.5 km', corners: '14' },
+            'INDY': { name: 'Indianapolis Motor Speedway', length: '4.0 km', corners: '4' }
+        };
+        
+        // Initialize dashboard
+        function initializeDashboard() {
+            const trackSelector = document.getElementById('trackSelector');
+            const trackImage = document.getElementById('trackImage');
+            
+            // Set initial track
+            updateTrackDisplay('BMP');
+            
+            // Handle track selection
+            trackSelector.addEventListener('change', function() {
+                updateTrackDisplay(this.value);
+            });
+            
+            // Start telemetry updates
+            startTelemetryUpdates();
+        }
+        
+        function updateTrackDisplay(trackId) {
+            const config = trackConfigs[trackId];
+            const trackImage = document.getElementById('trackImage');
+            
+            // Update track info
+            document.getElementById('trackName').textContent = config.name;
+            document.getElementById('trackLength').textContent = config.length;
+            document.getElementById('trackCorners').textContent = config.corners;
+            
+            // Check if we have real track image data
+            if (typeof TRACK_IMAGES !== 'undefined' && TRACK_IMAGES[trackId]) {
+                // Use real extracted track image
+                trackImage.src = TRACK_IMAGES[trackId].image_url;
+                trackImage.alt = `${config.name} Track Layout`;
+            } else {
+                // Fallback to SVG representation
+                createTrackSVG(trackId);
+            }
+        }
+        
+        function createTrackSVG(trackId) {
+            const trackContainer = document.querySelector('.track-container');
+            const config = trackConfigs[trackId];
+            
+            // Create simple SVG representation
+            const svg = `
+                <svg width="400" height="300" viewBox="0 0 400 300" style="background: #1a1a1a;">
+                    <ellipse cx="200" cy="150" rx="180" ry="120" 
+                             fill="none" stroke="#eb0a1e" stroke-width="3"/>
+                    <circle cx="200" cy="30" r="5" fill="#00ff00"/>
+                    <text x="200" y="150" text-anchor="middle" fill="white" font-size="14">
+                        ${config.name}
+                    </text>
+                    <text x="200" y="170" text-anchor="middle" fill="#eb0a1e" font-size="12">
+                        ${config.length} • ${config.corners} corners
+                    </text>
+                </svg>
+            `;
+            
+            trackContainer.innerHTML = svg;
+        }
+        
+        function startTelemetryUpdates() {
+            let speed = 153;
+            let lap = 16;
+            let tireAge = 16;
+            let position = 3;
+            
+            setInterval(() => {
+                // Simulate realistic telemetry changes
+                speed = 140 + Math.random() * 40;
+                
+                // Update display
+                document.getElementById('speed').textContent = Math.round(speed);
+                document.getElementById('currentLap').textContent = lap;
+                document.getElementById('tireAge').textContent = tireAge;
+                document.getElementById('position').textContent = `P${position}`;
+                
+                // Occasionally increment lap
+                if (Math.random() < 0.1) {
+                    lap++;
+                    tireAge++;
+                }
+                
+                // Update delta indicators
+                updateDeltas();
+                
+            }, 1000);
+        }
+        
+        function updateDeltas() {
+            const deltas = ['speedDelta', 'tireAgeDelta'];
+            
+            deltas.forEach(deltaId => {
+                const element = document.getElementById(deltaId);
+                const delta = (Math.random() - 0.5) * 0.8;
+                const sign = delta >= 0 ? '+' : '';
+                element.textContent = `${sign}${delta.toFixed(1)}`;
+                element.className = `delta-time ${delta >= 0 ? 'delta-positive' : 'delta-negative'}`;
+            });
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeDashboard);
+    </script>
+</body>
+</html>

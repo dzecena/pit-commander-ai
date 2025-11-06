@@ -1,0 +1,15 @@
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Sid": "PublicReadGetObject",
+      "Effect": "Allow",
+      "Principal": "*",
+      "Action": "s3:GetObject",
+      "Resource": [
+        "arn:aws:s3:::gr-cup-data-dev-us-east-1-v2/dashboard/*",
+        "arn:aws:s3:::gr-cup-data-dev-us-east-1-v2/track-images/*"
+      ]
+    }
+  ]
+}

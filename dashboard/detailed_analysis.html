@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🔍 GR Cup Detailed Analysis Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #eb0a1e, #c41e3a);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        
+        .header h1 {
+            font-size: 1.8em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .nav-link {
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.1);
+            transition: background 0.3s;
+        }
+        
+        .nav-link:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .selection-bar {
+            background: #1a1a1a;
+            padding: 20px;
+            border-bottom: 1px solid #333;
+        }
+        
+        .selection-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .selector {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #333;
+        }
+        
+        .selector h3 {
+            color: #eb0a1e;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+        
+        .selector select {
+            width: 100%;
+            background: #333;
+            color: white;
+            border: 1px solid #eb0a1e;
+            padding: 10px;
+            border-radius: 4px;
+            font-size: 1em;
+        }
+        
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: auto auto auto;
+            gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+        
+        .panel {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid #333;
+        }
+        
+        .panel h2 {
+            color: #eb0a1e;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            border-bottom: 2px solid #eb0a1e;
+            padding-bottom: 8px;
+        }
+        
+        .full-width {
+            grid-column: 1 / 3;
+        }
+        
+        .telemetry-chart {
+            height: 300px;
+            background: #2a2a2a;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .chart-placeholder {
+            color: #666;
+            font-size: 1.1em;
+        }
+        
+        .metrics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .metric-box {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            border-left: 4px solid #eb0a1e;
+        }
+        
+        .metric-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #eb0a1e;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .metric-change {
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+        
+        .change-positive { color: #00ff00; }
+        .change-negative { color: #ff4444; }
+        .change-neutral { color: #ffaa00; }
+        
+        .detailed-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        
+        .detailed-table th,
+        .detailed-table td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #333;
+        }
+        
+        .detailed-table th {
+            background: #2a2a2a;
+            color: #eb0a1e;
+            font-weight: bold;
+        }
+        
+        .detailed-table tr:hover {
+            background: #2a2a2a;
+        }
+        
+        .progress-bar {
+            width: 100%;
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 5px 0;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #eb0a1e, #ff6b35);
+            transition: width 0.3s ease;
+        }
+        
+        .insight-card {
+            background: #2a2a2a;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #eb0a1e;
+        }
+        
+        .insight-card.critical {
+            border-left-color: #ff0000;
+            background: #3a1a1a;
+        }
+        
+        .insight-card.warning {
+            border-left-color: #ffaa00;
+            background: #3a2a1a;
+        }
+        
+        .insight-card.positive {
+            border-left-color: #00ff00;
+            background: #1a3a1a;
+        }
+        
+        .insight-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+        
+        .insight-detail {
+            font-size: 0.9em;
+            line-height: 1.4;
+            opacity: 0.9;
+        }
+        
+        .comparison-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        
+        .comparison-card {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 6px;
+        }
+        
+        .comparison-title {
+            color: #eb0a1e;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .track-map-container {
+            width: 100%;
+            height: 250px;
+            background: #0a0a0a;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .track-image {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 6px;
+            object-fit: contain;
+        }
+        
+        .sector-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>🔍 GR Cup Detailed Analysis</h1>
+            <div style="font-size: 0.8em; opacity: 0.8;">Deep Dive Performance Analysis</div>
+        </div>
+        <div class="nav-links">
+            <a href="track_dashboard.html" class="nav-link">← Main Dashboard</a>
+            <a href="#" class="nav-link" onclick="exportData()">📊 Export Data</a>
+        </div>
+    </div>
+    
+    <div class="selection-bar">
+        <div class="selection-grid">
+            <div class="selector">
+                <h3>🏎️ Select Driver</h3>
+                <select id="driverSelector">
+                    <option value="">Choose a driver...</option>
+                    <option value="001">Driver #001 - GR86-001-001</option>
+                    <option value="002">Driver #002 - GR86-002-002</option>
+                    <option value="003">Driver #003 - GR86-003-003</option>
+                    <option value="004">Driver #004 - GR86-004-004</option>
+                    <option value="005">Driver #005 - GR86-005-005</option>
+                </select>
+            </div>
+            
+            <div class="selector">
+                <h3>🗺️ Select Track</h3>
+                <select id="trackSelector">
+                    <option value="">Choose a track...</option>
+                    <option value="BMP">Barber Motorsports Park</option>
+                    <option value="COTA">Circuit of the Americas</option>
+                    <option value="VIR">Virginia International Raceway</option>
+                    <option value="SEB">Sebring International Raceway</option>
+                    <option value="SON">Sonoma Raceway</option>
+                    <option value="RA">Road America</option>
+                    <option value="INDY">Indianapolis Motor Speedway</option>
+                </select>
+            </div>
+            
+            <div class="selector">
+                <h3>📊 Analysis Type</h3>
+                <select id="analysisSelector">
+                    <option value="overview">Performance Overview</option>
+                    <option value="telemetry">Telemetry Deep Dive</option>
+                    <option value="comparison">Driver Comparison</option>
+                    <option value="historical">Historical Trends</option>
+                </select>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-content" id="mainContent">
+        <div class="loading">
+            <h2>Select a driver and track to begin detailed analysis</h2>
+            <p>Choose from the dropdowns above to see comprehensive performance insights</p>
+        </div>
+    </div>
+    
+    <script src="track_images_embedded.js"></script>
+    <script>
+        // Import the same driver data structure from main dashboard
+        const driverData = {
+            "001": {
+                name: "Driver #001",
+                chassis: "GR86-001-001",
+                status: "fast",
+                tracks: {
+                    "BMP": {
+                        bestLap: "1:24.567", avgSpeed: 142.3, consistency: 94, position: 3,
+                        sectors: [23.456, 31.234, 29.877, 25.123, 28.456, 26.421],
+                        gearUsage: { gear2: 15, gear3: 25, gear4: 35, gear5: 20, gear6: 5 },
+                        avgGear: 4.2, maxGear: 6, gearShifts: 28,
+                        detailedMetrics: {
+                            maxSpeed: 168.5, avgThrottle: 67.2, avgBraking: 23.1,
+                            corneringG: 1.8, brakingG: 2.1, accelerationG: 1.2,
+                            tireTemp: { fl: 98, fr: 102, rl: 95, rr: 99 },
+                            fuelUsage: 2.8, lapCount: 15
+                        }
+                    }
+                    // Add more tracks as needed
+                }
+            }
+            // Add more drivers as needed
+        };
+        
+        const trackConfigs = {
+            'BMP': { 
+                name: 'Barber Motorsports Park',
+                length: '2.4 km',
+                corners: 17,
+                sectors: 6,
+                characteristics: ['Technical', 'Flowing', 'Elevation Changes']
+            },
+            'COTA': { 
+                name: 'Circuit of the Americas',
+                length: '5.5 km', 
+                corners: 20,
+                sectors: 6,
+                characteristics: ['Mixed', 'High-Speed', 'Technical Sections']
+            }
+            // Add more tracks
+        };
+        
+        let selectedDriver = null;
+        let selectedTrack = null;
+        let analysisType = 'overview';
+        
+        function initializeDetailedDashboard() {
+            console.log("Initializing Detailed Analysis Dashboard");
+            
+            // Check for URL parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const driverParam = urlParams.get('driver');
+            const trackParam = urlParams.get('track');
+            
+            // Set initial selections from URL parameters
+            if (driverParam) {
+                selectedDriver = driverParam;
+                document.getElementById('driverSelector').value = driverParam;
+            }
+            
+            if (trackParam) {
+                selectedTrack = trackParam;
+                document.getElementById('trackSelector').value = trackParam;
+            }
+            
+            // Set up event listeners
+            document.getElementById('driverSelector').addEventListener('change', function() {
+                selectedDriver = this.value;
+                updateAnalysis();
+            });
+            
+            document.getElementById('trackSelector').addEventListener('change', function() {
+                selectedTrack = this.value;
+                updateAnalysis();
+            });
+            
+            document.getElementById('analysisSelector').addEventListener('change', function() {
+                analysisType = this.value;
+                updateAnalysis();
+            });
+            
+            // Initial analysis if both driver and track are selected
+            if (selectedDriver && selectedTrack) {
+                updateAnalysis();
+            }
+        }
+        
+        function updateAnalysis() {
+            const mainContent = document.getElementById('mainContent');
+            
+            if (!selectedDriver || !selectedTrack) {
+                mainContent.innerHTML = `
+                    <div class="loading">
+                        <h2>Select both a driver and track to begin analysis</h2>
+                        <p>Choose from the dropdowns above to see comprehensive performance insights</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            const driver = driverData[selectedDriver];
+            const trackData = driver?.tracks[selectedTrack];
+            const trackConfig = trackConfigs[selectedTrack];
+            
+            if (!trackData) {
+                mainContent.innerHTML = `
+                    <div class="loading">
+                        <h2>No data available</h2>
+                        <p>No performance data found for ${driver?.name} at ${trackConfig?.name}</p>
+                    </div>
+                `;
+                return;
+            }
+            
+            switch(analysisType) {
+                case 'overview':
+                    renderOverviewAnalysis(driver, trackData, trackConfig);
+                    break;
+                case 'telemetry':
+                    renderTelemetryAnalysis(driver, trackData, trackConfig);
+                    break;
+                case 'comparison':
+                    renderComparisonAnalysis(driver, trackData, trackConfig);
+                    break;
+                case 'historical':
+                    renderHistoricalAnalysis(driver, trackData, trackConfig);
+                    break;
+            }
+        }
+        
+        function renderOverviewAnalysis(driver, trackData, trackConfig) {
+            const mainContent = document.getElementById('mainContent');
+            
+            mainContent.innerHTML = `
+                <!-- Performance Overview -->
+                <div class="panel">
+                    <h2>📊 Performance Overview</h2>
+                    <h3 style="color: #eb0a1e; margin-bottom: 15px;">${driver.name} at ${trackConfig.name}</h3>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-box">
+                            <div class="metric-value">${trackData.bestLap}</div>
+                            <div class="metric-label">Best Lap Time</div>
+                            <div class="metric-change change-positive">-0.234s vs last session</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">P${trackData.position}</div>
+                            <div class="metric-label">Current Position</div>
+                            <div class="metric-change change-positive">+1 position gained</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">${trackData.avgSpeed}</div>
+                            <div class="metric-label">Avg Speed (mph)</div>
+                            <div class="metric-change change-positive">+2.1 mph improvement</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">${trackData.consistency}%</div>
+                            <div class="metric-label">Consistency</div>
+                            <div class="metric-change change-neutral">Stable</div>
+                        </div>
+                    </div>
+                    
+                    <h4 style="color: #eb0a1e; margin: 20px 0 10px 0;">Sector Performance</h4>
+                    <table class="detailed-table">
+                        <thead>
+                            <tr>
+                                <th>Sector</th>
+                                <th>Time</th>
+                                <th>vs Best</th>
+                                <th>Rank</th>
+                                <th>Improvement</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${trackData.sectors.map((time, index) => {
+                                const bestSector = Math.min(...trackData.sectors);
+                                const delta = time - bestSector;
+                                return `
+                                    <tr>
+                                        <td>Sector ${index + 1}</td>
+                                        <td>${time.toFixed(3)}s</td>
+                                        <td style="color: ${delta === 0 ? '#00ff00' : '#ffaa00'}">${delta === 0 ? 'BEST' : '+' + delta.toFixed(3) + 's'}</td>
+                                        <td>${Math.floor(Math.random() * 5) + 1}/5</td>
+                                        <td style="color: #00ff00">-0.${Math.floor(Math.random() * 200) + 50}s</td>
+                                    </tr>
+                                `;
+                            }).join('')}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Track Analysis -->
+                <div class="panel">
+                    <h2>🗺️ Track Analysis</h2>
+                    
+                    <div class="track-map-container">
+                        <img id="trackImage" class="track-image" src="" alt="Track Layout" />
+                    </div>
+                    
+                    <h4 style="color: #eb0a1e; margin-bottom: 10px;">Track Characteristics</h4>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        ${trackConfig.characteristics.map(char => 
+                            `<span style="background: #2a2a2a; padding: 5px 10px; border-radius: 15px; font-size: 0.9em;">${char}</span>`
+                        ).join('')}
+                    </div>
+                    
+                    <div class="metrics-grid">
+                        <div class="metric-box">
+                            <div class="metric-value">${trackConfig.length}</div>
+                            <div class="metric-label">Track Length</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">${trackConfig.corners}</div>
+                            <div class="metric-label">Total Corners</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">${trackConfig.sectors}</div>
+                            <div class="metric-label">Sectors</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Gear Analysis -->
+                <div class="panel full-width">
+                    <h2>⚙️ Detailed Gear Analysis</h2>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                        <div>
+                            <h4 style="color: #eb0a1e; margin-bottom: 10px;">Gear Usage Distribution</h4>
+                            <p style="font-size: 0.9em; opacity: 0.8; margin-bottom: 10px;">
+                                Shows percentage of lap time spent in each gear. Optimal distribution varies by track type.
+                            </p>
+                            ${generateDetailedGearChart(trackData.gearUsage)}
+                            
+                            <div style="background: #333; padding: 10px; border-radius: 4px; margin-top: 10px; font-size: 0.85em;">
+                                <strong>Reading the chart:</strong><br>
+                                • <span style="color: #ff4444;">Red (1st-2nd)</span>: Low speed corners, should be minimal<br>
+                                • <span style="color: #ffaa44;">Yellow (3rd-4th)</span>: Technical sections, most common<br>
+                                • <span style="color: #44ff88;">Green (5th-6th)</span>: High speed sections, maximize for speed
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <h4 style="color: #eb0a1e; margin-bottom: 10px;">Gear Performance Metrics</h4>
+                            <div class="metrics-grid">
+                                <div class="metric-box">
+                                    <div class="metric-value">${trackData.avgGear}</div>
+                                    <div class="metric-label">Average Gear</div>
+                                    <div class="metric-change ${trackData.avgGear >= 4.5 ? 'change-positive' : trackData.avgGear >= 4.0 ? 'change-neutral' : 'change-negative'}">
+                                        ${trackData.avgGear >= 4.5 ? 'Optimal' : trackData.avgGear >= 4.0 ? 'Good' : 'Needs Work'}
+                                    </div>
+                                </div>
+                                <div class="metric-box">
+                                    <div class="metric-value">${trackData.gearShifts}</div>
+                                    <div class="metric-label">Shifts per Lap</div>
+                                    <div class="metric-change ${trackData.gearShifts <= 25 ? 'change-positive' : trackData.gearShifts <= 35 ? 'change-neutral' : 'change-negative'}">
+                                        ${trackData.gearShifts <= 25 ? 'Excellent' : trackData.gearShifts <= 35 ? 'Good' : 'Too Many'}
+                                    </div>
+                                </div>
+                                <div class="metric-box">
+                                    <div class="metric-value">${trackData.maxGear}</div>
+                                    <div class="metric-label">Max Gear Used</div>
+                                    <div class="metric-change ${trackData.maxGear === 6 ? 'change-positive' : 'change-negative'}">
+                                        ${trackData.maxGear === 6 ? 'Full Range' : 'Limited'}
+                                    </div>
+                                </div>
+                                <div class="metric-box">
+                                    <div class="metric-value">${calculateGearScore(trackData)}%</div>
+                                    <div class="metric-label">Gear Efficiency</div>
+                                    <div class="metric-change ${calculateGearScore(trackData) >= 85 ? 'change-positive' : calculateGearScore(trackData) >= 70 ? 'change-neutral' : 'change-negative'}">
+                                        ${calculateGearScore(trackData) >= 85 ? 'Excellent' : calculateGearScore(trackData) >= 70 ? 'Good' : 'Needs Work'}
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div style="background: #2a2a2a; padding: 12px; border-radius: 6px; margin-top: 15px; font-size: 0.9em;">
+                                <strong>Gear Efficiency Explained:</strong><br>
+                                Combines average gear usage, shift frequency, and gear range utilization. 
+                                Higher scores indicate better gear management and potential for faster lap times.
+                                <br><br>
+                                <strong>Improvement Priority:</strong><br>
+                                ${getGearImprovementPriority(trackData)}
+                            </div>
+                            
+                            <h4 style="color: #eb0a1e; margin: 15px 0 10px 0;">Gear Optimization</h4>
+                            ${generateGearRecommendations(trackData)}
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Coaching Insights -->
+                <div class="panel full-width">
+                    <h2>🎯 Advanced Coaching Insights</h2>
+                    
+                    <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                        ${generateAdvancedInsights(driver, trackData, trackConfig)}
+                    </div>
+                </div>
+            `;
+            
+            // Load track image
+            loadTrackImage(selectedTrack);
+        }
+        
+        function renderTelemetryAnalysis(driver, trackData, trackConfig) {
+            const mainContent = document.getElementById('mainContent');
+            
+            mainContent.innerHTML = `
+                <div class="panel full-width">
+                    <h2>📈 Telemetry Deep Dive</h2>
+                    <p style="margin-bottom: 20px;">Detailed telemetry analysis for ${driver.name} at ${trackConfig.name}</p>
+                    
+                    <div class="telemetry-chart">
+                        <div class="chart-placeholder">Speed vs Distance Chart</div>
+                    </div>
+                    
+                    <div class="telemetry-chart">
+                        <div class="chart-placeholder">Throttle & Brake vs Distance Chart</div>
+                    </div>
+                    
+                    <div class="telemetry-chart">
+                        <div class="chart-placeholder">G-Force Analysis Chart</div>
+                    </div>
+                </div>
+                
+                <div class="panel">
+                    <h2>🔧 Technical Metrics</h2>
+                    <div class="metrics-grid">
+                        <div class="metric-box">
+                            <div class="metric-value">168.5</div>
+                            <div class="metric-label">Max Speed (mph)</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">67.2%</div>
+                            <div class="metric-label">Avg Throttle</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">1.8G</div>
+                            <div class="metric-label">Max Cornering</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">2.1G</div>
+                            <div class="metric-label">Max Braking</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="panel">
+                    <h2>🌡️ Vehicle Data</h2>
+                    <h4 style="color: #eb0a1e; margin-bottom: 10px;">Tire Temperatures</h4>
+                    <div class="metrics-grid">
+                        <div class="metric-box">
+                            <div class="metric-value">98°F</div>
+                            <div class="metric-label">Front Left</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">102°F</div>
+                            <div class="metric-label">Front Right</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">95°F</div>
+                            <div class="metric-label">Rear Left</div>
+                        </div>
+                        <div class="metric-box">
+                            <div class="metric-value">99°F</div>
+                            <div class="metric-label">Rear Right</div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+        
+        function generateDetailedGearChart(gearUsage) {
+            const totalTime = Object.values(gearUsage).reduce((a, b) => a + b, 0);
+            
+            let chart = '<div style="margin-bottom: 15px;">';
+            
+            Object.entries(gearUsage).forEach(([gear, percentage]) => {
+                const gearNum = gear.replace('gear', '');
+                const width = (percentage / totalTime) * 100;
+                const color = getGearColor(parseInt(gearNum));
+                
+                chart += `
+                    <div style="display: flex; align-items: center; margin-bottom: 8px;">
+                        <div style="width: 60px; font-size: 0.9em;">Gear ${gearNum}:</div>
+                        <div style="flex: 1; background: #333; height: 20px; border-radius: 10px; overflow: hidden; margin: 0 10px;">
+                            <div style="background: ${color}; width: ${width}%; height: 100%; transition: width 0.3s;"></div>
+                        </div>
+                        <div style="width: 50px; font-size: 0.9em; text-align: right;">${percentage}%</div>
+                    </div>
+                `;
+            });
+            
+            chart += '</div>';
+            return chart;
+        }
+        
+        function getGearColor(gear) {
+            const colors = {
+                1: '#ff4444', 2: '#ff8844', 3: '#ffaa44', 
+                4: '#ffdd44', 5: '#88ff44', 6: '#44ff88'
+            };
+            return colors[gear] || '#666666';
+        }
+        
+        function calculateGearScore(trackData) {
+            let score = 0;
+            
+            // Average gear score (0-40 points)
+            const avgGearScore = Math.min(40, (trackData.avgGear / 6.0) * 40);
+            score += avgGearScore;
+            
+            // Shift frequency score (0-30 points) - fewer shifts is better
+            const shiftScore = Math.max(0, 30 - ((trackData.gearShifts - 20) * 2));
+            score += Math.min(30, shiftScore);
+            
+            // Gear range utilization (0-30 points)
+            const rangeScore = (trackData.maxGear / 6.0) * 30;
+            score += rangeScore;
+            
+            return Math.round(score);
+        }
+        
+        function getGearImprovementPriority(trackData) {
+            const issues = [];
+            
+            if (trackData.avgGear < 4.0) {
+                issues.push("1. <strong>Increase average gear usage</strong> - Focus on using higher gears");
+            }
+            
+            if (trackData.gearShifts > 35) {
+                issues.push("2. <strong>Reduce gear changes</strong> - Plan shifts more efficiently");
+            }
+            
+            const totalTime = Object.values(trackData.gearUsage).reduce((a, b) => a + b, 0);
+            const gear6Percent = (trackData.gearUsage.gear6 / totalTime) * 100;
+            
+            if (gear6Percent < 5 && selectedTrack !== 'BMP') {
+                issues.push("3. <strong>Utilize top gear more</strong> - Find opportunities for 6th gear");
+            }
+            
+            if (issues.length === 0) {
+                return "Gear usage is well optimized. Focus on fine-tuning shift timing and maintaining consistency.";
+            }
+            
+            return issues.join('<br>');
+        }
+        
+        function generateGearRecommendations(trackData) {
+            let recommendations = '<div>';
+            
+            // Analyze gear usage patterns and provide specific coaching
+            const totalTime = Object.values(trackData.gearUsage).reduce((a, b) => a + b, 0);
+            const gear2Percent = (trackData.gearUsage.gear2 / totalTime) * 100;
+            const gear6Percent = (trackData.gearUsage.gear6 / totalTime) * 100;
+            
+            // Low gear usage analysis
+            if (trackData.avgGear < 4.0) {
+                recommendations += `
+                    <div class="insight-card critical">
+                        <div class="insight-title">🚨 Low Gear Usage Pattern</div>
+                        <div class="insight-detail">
+                            <strong>Issue:</strong> Average gear of ${trackData.avgGear} indicates staying in low gears too long.<br>
+                            <strong>Impact:</strong> Reduced top speed and slower acceleration out of corners.<br>
+                            <strong>How to improve:</strong><br>
+                            • Practice earlier upshifts after corner exit<br>
+                            • Use engine braking instead of staying in low gears<br>
+                            • Focus on smooth throttle application to enable higher gears<br>
+                            • Target: Increase average gear to 4.5+ for this track
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Excessive shifting analysis
+            if (trackData.gearShifts > 35) {
+                recommendations += `
+                    <div class="insight-card warning">
+                        <div class="insight-title">⚠️ Excessive Gear Changes</div>
+                        <div class="insight-detail">
+                            <strong>Issue:</strong> ${trackData.gearShifts} shifts per lap is above optimal (target: 25-30).<br>
+                            <strong>Impact:</strong> Disrupted car balance and lost momentum.<br>
+                            <strong>How to improve:</strong><br>
+                            • Plan gear changes before corners, not during<br>
+                            • Use engine braking zones more effectively<br>
+                            • Practice "skip shifting" where appropriate (3rd to 5th)<br>
+                            • Focus on maintaining gear longer through corner sequences<br>
+                            • Target: Reduce to under 30 shifts per lap
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Top gear utilization
+            if (gear6Percent < 5 && selectedTrack !== 'BMP') {
+                recommendations += `
+                    <div class="insight-card warning">
+                        <div class="insight-title">⚙️ Underutilized Top Gear</div>
+                        <div class="insight-detail">
+                            <strong>Issue:</strong> Only ${gear6Percent.toFixed(1)}% time in 6th gear on a track with straights.<br>
+                            <strong>Impact:</strong> Missing top speed potential and fuel efficiency.<br>
+                            <strong>How to improve:</strong><br>
+                            • Identify all straight sections where 6th gear is possible<br>
+                            • Practice earlier upshifts on main straights<br>
+                            • Use 6th gear even for short periods to maximize speed<br>
+                            • Check if setup allows for 6th gear usage<br>
+                            • Target: 10-15% time in 6th gear for high-speed tracks
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Second gear overuse
+            if (gear2Percent > 20) {
+                recommendations += `
+                    <div class="insight-card critical">
+                        <div class="insight-title">🚨 Excessive Low Gear Usage</div>
+                        <div class="insight-detail">
+                            <strong>Issue:</strong> ${gear2Percent.toFixed(1)}% time in 2nd gear is too high.<br>
+                            <strong>Impact:</strong> Poor acceleration and reduced corner exit speed.<br>
+                            <strong>How to improve:</strong><br>
+                            • Work on corner entry speed to avoid dropping to 2nd<br>
+                            • Practice trail braking to maintain higher corner speeds<br>
+                            • Focus on racing line to carry more speed through corners<br>
+                            • Use 3rd gear with more throttle control instead of 2nd<br>
+                            • Target: Reduce 2nd gear usage to under 15%
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Optimal gear usage praise
+            if (trackData.avgGear >= 4.5 && trackData.gearShifts <= 30 && gear6Percent >= 10) {
+                recommendations += `
+                    <div class="insight-card positive">
+                        <div class="insight-title">✅ Excellent Gear Management</div>
+                        <div class="insight-detail">
+                            <strong>Strengths:</strong><br>
+                            • Optimal average gear usage (${trackData.avgGear})<br>
+                            • Efficient shift frequency (${trackData.gearShifts} shifts/lap)<br>
+                            • Good top gear utilization (${gear6Percent.toFixed(1)}%)<br>
+                            <strong>Maintain:</strong> Continue current gear selection strategy<br>
+                            <strong>Fine-tune:</strong> Look for micro-optimizations in gear timing
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Track-specific gear advice
+            recommendations += generateTrackSpecificGearAdvice(trackData, selectedTrack);
+            
+            recommendations += '</div>';
+            return recommendations;
+        }
+        
+        function generateTrackSpecificGearAdvice(trackData, trackId) {
+            const trackGearAdvice = {
+                'BMP': {
+                    title: 'Barber Motorsports Park - Technical Gear Strategy',
+                    advice: `
+                        <strong>Track characteristics:</strong> Technical with elevation changes<br>
+                        <strong>Key gear zones:</strong><br>
+                        • Turn 5: Use 3rd gear, early throttle for uphill exit<br>
+                        • Sector 2: Focus on 4th-5th gear flow through esses<br>
+                        • Back straight: Brief 6th gear opportunity<br>
+                        <strong>Technique:</strong> Prioritize smooth gear changes over speed
+                    `
+                },
+                'COTA': {
+                    title: 'COTA - Mixed Speed Gear Management',
+                    advice: `
+                        <strong>Track characteristics:</strong> Mix of high-speed and technical sections<br>
+                        <strong>Key gear zones:</strong><br>
+                        • Turn 1: 2nd gear entry, quick progression to 6th on back straight<br>
+                        • Esses (S2): Maintain 4th-5th gear flow<br>
+                        • Stadium section: 3rd gear focus with smooth transitions<br>
+                        <strong>Technique:</strong> Plan gear changes for long straights
+                    `
+                },
+                'VIR': {
+                    title: 'VIR - High-Speed Gear Optimization',
+                    advice: `
+                        <strong>Track characteristics:</strong> High-speed with flowing sections<br>
+                        <strong>Key gear zones:</strong><br>
+                        • Uphill esses: Maintain momentum with 4th-5th gear<br>
+                        • Main straight: Maximize 6th gear usage<br>
+                        • Oak Tree: 3rd gear commitment through complex<br>
+                        <strong>Technique:</strong> Use higher gears to maintain flow
+                    `
+                },
+                'INDY': {
+                    title: 'Indianapolis - Oval Gear Strategy',
+                    advice: `
+                        <strong>Track characteristics:</strong> High-speed oval racing<br>
+                        <strong>Key gear zones:</strong><br>
+                        • Straights: Maximum 6th gear usage (70%+ target)<br>
+                        • Turns: 5th gear with minimal shifting<br>
+                        • Pit entry/exit: Plan gear changes for traffic<br>
+                        <strong>Technique:</strong> Minimize shifts, maximize top gear time
+                    `
+                }
+            };
+            
+            const advice = trackGearAdvice[trackId];
+            if (!advice) return '';
+            
+            return `
+                <div class="insight-card">
+                    <div class="insight-title">🏁 ${advice.title}</div>
+                    <div class="insight-detail">${advice.advice}</div>
+                </div>
+            `;
+        }
+        
+        function generateAdvancedInsights(driver, trackData, trackConfig) {
+            return `
+                <div class="insight-card positive">
+                    <div class="insight-title">✅ Strengths</div>
+                    <div class="insight-detail">
+                        • Consistent sector 1 performance<br>
+                        • Good gear management<br>
+                        • Smooth throttle application
+                    </div>
+                </div>
+                
+                <div class="insight-card warning">
+                    <div class="insight-title">⚠️ Areas for Improvement</div>
+                    <div class="insight-detail">
+                        • Losing 0.3s in sector 3<br>
+                        • Late on throttle in tight corners<br>
+                        • Inconsistent braking points
+                    </div>
+                </div>
+                
+                <div class="insight-card">
+                    <div class="insight-title">🎯 Action Items</div>
+                    <div class="insight-detail">
+                        • Practice trail braking technique<br>
+                        • Work on corner exit optimization<br>
+                        • Focus on sector 3 consistency
+                    </div>
+                </div>
+            `;
+        }
+        
+        function loadTrackImage(trackId) {
+            const trackImage = document.getElementById('trackImage');
+            if (trackImage && typeof TRACK_IMAGES !== 'undefined' && TRACK_IMAGES[trackId]) {
+                trackImage.src = TRACK_IMAGES[trackId].image_url;
+                trackImage.alt = `${trackConfigs[trackId].name} Track Layout`;
+            }
+        }
+        
+        function exportData() {
+            alert('Export functionality would generate detailed PDF report or CSV data export');
+        }
+        
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', initializeDetailedDashboard);
+    </script>
+</body>
+</html>

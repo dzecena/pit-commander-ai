@@ -1,0 +1,82 @@
+[
+  {
+    "version_name": "v1.0",
+    "filename": "track_dashboard_v1.0_working_20251105_164613.html",
+    "description": "Working baseline with real track images and simulated telemetry",
+    "is_working": true,
+    "timestamp": "20251105_164613",
+    "created_at": "2025-11-05T16:46:13.294579"
+  },
+  {
+    "version_name": "v1.0_display_only",
+    "filename": "track_dashboard_v1.0_display_only_working_20251105_164939.html",
+    "description": "Basic display dashboard - not useful for coaching",
+    "is_working": true,
+    "timestamp": "20251105_164939",
+    "created_at": "2025-11-05T16:49:39.870241"
+  },
+  {
+    "version_name": "v2.0",
+    "filename": "track_dashboard_v2.0_working_20251105_165610.html",
+    "description": "Complete coaching dashboard with driver analysis and performance insights",
+    "is_working": true,
+    "timestamp": "20251105_165610",
+    "created_at": "2025-11-05T16:56:10.104762"
+  },
+  {
+    "version_name": "v2.1",
+    "filename": "track_dashboard_v2.1_working_20251105_170407.html",
+    "description": "Fixed coaching dashboard - complete working version with driver analysis",
+    "is_working": true,
+    "timestamp": "20251105_170407",
+    "created_at": "2025-11-05T17:04:07.332988"
+  },
+  {
+    "version_name": "v2.2",
+    "filename": "track_dashboard_v2.2_working_20251105_171943.html",
+    "description": "Enhanced coaching dashboard with track selection, gear usage analysis, and multi-track driver data",
+    "is_working": true,
+    "timestamp": "20251105_171943",
+    "created_at": "2025-11-05T17:19:43.243882"
+  },
+  {
+    "version_name": "v2.3",
+    "filename": "track_dashboard_v2.3_working_20251105_173656.html",
+    "description": "Fixed driver count - now includes all 5 drivers (001-005) matching real data",
+    "is_working": true,
+    "timestamp": "20251105_173656",
+    "created_at": "2025-11-05T17:36:56.474647"
+  },
+  {
+    "version_name": "v2.4",
+    "filename": "track_dashboard_v2.4_working_20251105_175022.html",
+    "description": "Complete dataset - all 5 drivers across all 7 tracks with full performance data",
+    "is_working": true,
+    "timestamp": "20251105_175022",
+    "created_at": "2025-11-05T17:50:22.514049"
+  },
+  {
+    "version_name": "v2.5",
+    "filename": "track_dashboard_v2.5_working_20251105_181914.html",
+    "description": "Removed misleading session info - cleaner header with just current track",
+    "is_working": true,
+    "timestamp": "20251105_181914",
+    "created_at": "2025-11-05T18:19:14.385911"
+  },
+  {
+    "version_name": "v2.6",
+    "filename": "track_dashboard_v2.6_working_20251105_183459.html",
+    "description": "Added detailed analysis dashboard with drill-down capabilities and navigation link",
+    "is_working": true,
+    "timestamp": "20251105_183459",
+    "created_at": "2025-11-05T18:34:59.968147"
+  },
+  {
+    "version_name": "v2.7",
+    "filename": "track_dashboard_v2.7_working_20251105_185239.html",
+    "description": "Enhanced navigation with context-aware drill-down buttons and URL parameters",
+    "is_working": true,
+    "timestamp": "20251105_185239",
+    "created_at": "2025-11-05T18:52:39.473599"
+  }
+]
