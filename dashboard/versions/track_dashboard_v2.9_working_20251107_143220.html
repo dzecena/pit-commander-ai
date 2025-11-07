@@ -1,0 +1,1256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🏁 GR Cup Coaching Dashboard v2.5</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0a;
+            color: #ffffff;
+            overflow-x: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #eb0a1e, #c41e3a);
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+        
+        .header h1 {
+            font-size: 1.8em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        .session-info {
+            text-align: right;
+            font-size: 0.9em;
+        }
+        
+        .nav-button {
+            background: rgba(255,255,255,0.1);
+            color: white;
+            text-decoration: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            transition: background 0.3s;
+            display: inline-block;
+            margin-left: 10px;
+        }
+        
+        .nav-button:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        
+        .drill-down-btn {
+            background: #eb0a1e;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            font-size: 0.8em;
+            cursor: pointer;
+            transition: background 0.3s;
+            margin-top: 5px;
+        }
+        
+        .drill-down-btn:hover {
+            background: #c41e3a;
+        }
+        
+        .main-container {
+            display: grid;
+            grid-template-columns: 300px 1fr 350px;
+            grid-template-rows: 1fr 1fr;
+            gap: 15px;
+            padding: 15px;
+            height: calc(100vh - 80px);
+        }
+        
+        .panel {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid #333;
+            overflow-y: auto;
+        }
+        
+        .panel h2 {
+            color: #eb0a1e;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            border-bottom: 2px solid #eb0a1e;
+            padding-bottom: 8px;
+        }
+        
+        .driver-list {
+            grid-column: 1;
+            grid-row: 1 / 3;
+        }
+        
+        .performance-analysis {
+            grid-column: 2;
+            grid-row: 1;
+        }
+        
+        .track-analysis {
+            grid-column: 2;
+            grid-row: 2;
+        }
+        
+        .coaching-insights {
+            grid-column: 3;
+            grid-row: 1 / 3;
+        }
+        
+        .driver-card {
+            background: #2a2a2a;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-left: 4px solid #666;
+        }
+        
+        .driver-card:hover {
+            background: #333;
+            transform: translateX(5px);
+        }
+        
+        .driver-card.selected {
+            border-left-color: #eb0a1e;
+            background: #2a1a1a;
+        }
+        
+        .driver-card.fast {
+            border-left-color: #00ff00;
+        }
+        
+        .driver-card.struggling {
+            border-left-color: #ff6600;
+        }
+        
+        .driver-card.needs-attention {
+            border-left-color: #ff0000;
+        }
+        
+        .driver-name {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 5px;
+        }
+        
+        .driver-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            font-size: 0.85em;
+        }
+        
+        .stat-item {
+            display: flex;
+            justify-content: space-between;
+        }
+        
+        .performance-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .metric-card {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+        
+        .metric-value {
+            font-size: 1.8em;
+            font-weight: bold;
+            color: #eb0a1e;
+            margin-bottom: 5px;
+        }
+        
+        .metric-label {
+            font-size: 0.9em;
+            opacity: 0.8;
+        }
+        
+        .metric-trend {
+            font-size: 0.8em;
+            margin-top: 5px;
+        }
+        
+        .trend-up { color: #00ff00; }
+        .trend-down { color: #ff4444; }
+        .trend-stable { color: #ffaa00; }
+        
+        .sector-analysis {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+            margin: 15px 0;
+        }
+        
+        .sector {
+            background: #2a2a2a;
+            padding: 10px;
+            border-radius: 4px;
+            text-align: center;
+            font-size: 0.85em;
+        }
+        
+        .sector.best { background: #1a4a1a; }
+        .sector.worst { background: #4a1a1a; }
+        .sector.average { background: #2a2a2a; }
+        
+        .coaching-card {
+            background: #2a2a2a;
+            border-radius: 6px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-left: 4px solid #eb0a1e;
+        }
+        
+        .coaching-card.critical {
+            border-left-color: #ff0000;
+            background: #3a1a1a;
+        }
+        
+        .coaching-card.improvement {
+            border-left-color: #ffaa00;
+            background: #3a2a1a;
+        }
+        
+        .coaching-card.positive {
+            border-left-color: #00ff00;
+            background: #1a3a1a;
+        }
+        
+        .coaching-title {
+            font-weight: bold;
+            margin-bottom: 8px;
+            font-size: 1em;
+        }
+        
+        .coaching-detail {
+            font-size: 0.9em;
+            line-height: 1.4;
+            opacity: 0.9;
+        }
+        
+        .track-container {
+            width: 100%;
+            height: 200px;
+            background: #0a0a0a;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+            position: relative;
+        }
+        
+        .track-image {
+            max-width: 100%;
+            max-height: 100%;
+            border-radius: 6px;
+            object-fit: contain;
+        }
+        
+        .track-selector {
+            margin-bottom: 15px;
+        }
+        
+        .track-selector select {
+            background: #2a2a2a;
+            color: white;
+            border: 1px solid #eb0a1e;
+            padding: 8px;
+            border-radius: 4px;
+            font-size: 0.9em;
+            width: 100%;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            margin-right: 6px;
+        }
+        
+        .status-live {
+            background: #00ff00;
+            animation: pulse 2s infinite;
+        }
+        
+        .status-warning {
+            background: #ffaa00;
+        }
+        
+        .status-critical {
+            background: #ff0000;
+        }
+        
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.5; }
+            100% { opacity: 1; }
+        }
+        
+        .comparison-chart {
+            background: #2a2a2a;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .chart-bar {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+        
+        .chart-label {
+            width: 80px;
+            font-size: 0.8em;
+        }
+        
+        .chart-bar-fill {
+            height: 20px;
+            background: #eb0a1e;
+            border-radius: 2px;
+            margin-right: 8px;
+        }
+        
+        .chart-value {
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div>
+            <h1>🏁 GR Cup Coaching Dashboard</h1>
+            <div style="font-size: 0.8em; opacity: 0.8;">Version 2.5 - Clean Professional Interface</div>
+        </div>
+        <div class="session-info">
+            <div><strong>Current Track:</strong> <span id="currentTrackName">Barber Motorsports Park</span></div>
+            <div style="margin-top: 8px;">
+                <a href="#" onclick="openDetailedAnalysis()" class="nav-button" title="Open detailed analysis dashboard">🔍 Detailed Analysis</a>
+                <a href="#" onclick="openDetailedAnalysis(selectedDriver, currentTrack)" class="nav-button" title="Open with current driver and track selected">📊 Current Selection</a>
+            </div>
+            <div style="font-size: 0.7em; opacity: 0.6; margin-top: 3px;">
+                Tip: Ctrl+D for quick access | Click driver cards for deep dive
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-container">
+        <!-- Driver List Panel -->
+        <div class="panel driver-list">
+            <h2>🏎️ Driver Performance</h2>
+            <div id="driverList">
+                <!-- Drivers will be populated here -->
+            </div>
+        </div>
+        
+        <!-- Performance Analysis Panel -->
+        <div class="panel performance-analysis">
+            <h2>📊 Performance Analysis</h2>
+            <div id="performanceContent">
+                <p>Select a driver to view detailed performance metrics</p>
+            </div>
+        </div>
+        
+        <!-- Track Analysis Panel -->
+        <div class="panel track-analysis">
+            <h2>🗺️ Track Analysis</h2>
+            <div id="trackContent">
+                <div class="track-selector">
+                    <select id="trackSelector">
+                        <option value="BMP">Barber Motorsports Park</option>
+                        <option value="COTA">Circuit of the Americas</option>
+                        <option value="VIR">Virginia International Raceway</option>
+                        <option value="SEB">Sebring International Raceway</option>
+                        <option value="SON">Sonoma Raceway</option>
+                        <option value="RA">Road America</option>
+                        <option value="INDY">Indianapolis Motor Speedway</option>
+                    </select>
+                </div>
+                
+                <div class="track-container">
+                    <img id="trackImage" class="track-image" src="" alt="Track Layout" />
+                </div>
+                
+                <div style="background: #2a2a2a; padding: 12px; border-radius: 6px;">
+                    <h4 style="color: #eb0a1e; margin-bottom: 8px;">Track Coaching Notes</h4>
+                    <div id="trackInsights" style="font-size: 0.9em; line-height: 1.4;">
+                        Focus on smooth inputs through the technical sections. Turn 5 is crucial for lap time.
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Coaching Insights Panel -->
+        <div class="panel coaching-insights">
+            <h2>🎯 Coaching Insights</h2>
+            <div id="coachingContent">
+                <p>Select a driver to view coaching recommendations</p>
+            </div>
+        </div>
+    </div>
+    
+    <script src="track_images_embedded.js"></script>
+    <script>
+        // Driver data with track-specific performance and gear usage insights (using real driver IDs)
+        const driverData = {
+            "001": {
+                name: "Driver #001",
+                chassis: "GR86-001-001",
+                status: "fast",
+                tracks: {
+                    "BMP": {
+                        bestLap: "1:24.567", avgSpeed: 142.3, consistency: 94, position: 3,
+                        sectors: [23.456, 31.234, 29.877, 25.123, 28.456, 26.421],
+                        gearUsage: { gear2: 15, gear3: 25, gear4: 35, gear5: 20, gear6: 5 },
+                        avgGear: 4.2, maxGear: 6, gearShifts: 28,
+                        strengths: ["Consistent braking points", "Good sector 3 times", "Optimal gear usage in turns 5-7"],
+                        weaknesses: ["Losing 0.3s in sector 2", "Late gear shifts in tight corners"],
+                        recommendations: ["Work on corner exit technique", "Earlier downshift in turn 5", "Practice heel-toe technique"]
+                    },
+                    "COTA": {
+                        bestLap: "2:18.234", avgSpeed: 138.7, consistency: 91, position: 4,
+                        sectors: [28.456, 42.123, 35.877, 32.123, 31.456, 28.199],
+                        gearUsage: { gear2: 8, gear3: 18, gear4: 28, gear5: 32, gear6: 14 },
+                        avgGear: 4.8, maxGear: 6, gearShifts: 35,
+                        strengths: ["Good high-speed sections", "Proper gear selection in esses"],
+                        weaknesses: ["Struggling with gear timing in sector 2", "Missing optimal shift points"],
+                        recommendations: ["Focus on shift timing through esses", "Practice rev-matching", "Work on gear selection in turn 1"]
+                    },
+                    "VIR": {
+                        bestLap: "2:05.789", avgSpeed: 145.2, consistency: 96, position: 2,
+                        sectors: [25.789, 38.456, 32.123, 29.421, 30.000, 29.000],
+                        gearUsage: { gear2: 5, gear3: 15, gear4: 30, gear5: 35, gear6: 15 },
+                        avgGear: 5.1, maxGear: 6, gearShifts: 22,
+                        strengths: ["Excellent gear management", "Perfect shift points in flowing sections"],
+                        weaknesses: ["Minor time loss in gear transitions"],
+                        recommendations: ["Maintain current technique", "Fine-tune shift points in uphill sections"]
+                    },
+                    "SEB": {
+                        bestLap: "2:45.234", avgSpeed: 139.8, consistency: 93, position: 3,
+                        sectors: [32.456, 48.123, 41.789, 35.234, 38.456, 29.176],
+                        gearUsage: { gear2: 8, gear3: 18, gear4: 32, gear5: 28, gear6: 14 },
+                        avgGear: 4.7, maxGear: 6, gearShifts: 28,
+                        strengths: ["Good adaptation to bumpy surface", "Consistent gear selection"],
+                        weaknesses: ["Losing time in hairpin section", "Gear timing in bumpy areas"],
+                        recommendations: ["Focus on turn 17 technique", "Adjust gear timing for surface changes"]
+                    },
+                    "SON": {
+                        bestLap: "1:52.567", avgSpeed: 137.4, consistency: 91, position: 4,
+                        sectors: [28.567, 35.123, 31.456, 17.421],
+                        gearUsage: { gear2: 12, gear3: 25, gear4: 35, gear5: 23, gear6: 5 },
+                        avgGear: 4.3, maxGear: 6, gearShifts: 24,
+                        strengths: ["Good elevation change handling", "Smooth gear transitions"],
+                        weaknesses: ["Missing optimal shift points in carousel"],
+                        recommendations: ["Practice carousel gear selection", "Work on elevation braking points"]
+                    },
+                    "RA": {
+                        bestLap: "2:28.789", avgSpeed: 148.2, consistency: 94, position: 2,
+                        sectors: [35.789, 52.123, 43.456, 37.421],
+                        gearUsage: { gear2: 4, gear3: 12, gear4: 25, gear5: 35, gear6: 24 },
+                        avgGear: 5.3, maxGear: 6, gearShifts: 18,
+                        strengths: ["Excellent high-speed gear usage", "Perfect straight-line technique"],
+                        weaknesses: ["Minor time loss in slow corners"],
+                        recommendations: ["Maintain high-speed technique", "Focus on slow corner exits"]
+                    },
+                    "INDY": {
+                        bestLap: "1:45.123", avgSpeed: 152.8, consistency: 97, position: 2,
+                        sectors: [26.123, 26.000, 26.500, 26.500],
+                        gearUsage: { gear2: 0, gear3: 2, gear4: 8, gear5: 25, gear6: 65 },
+                        avgGear: 5.8, maxGear: 6, gearShifts: 8,
+                        strengths: ["Perfect oval technique", "Optimal gear usage for ovals"],
+                        weaknesses: ["None significant for oval racing"],
+                        recommendations: ["Maintain current oval technique", "Focus on draft strategy"]
+                    }
+                }
+            },
+            "002": {
+                name: "Driver #002", 
+                chassis: "GR86-002-002",
+                status: "fast",
+                tracks: {
+                    "BMP": {
+                        bestLap: "1:23.234", avgSpeed: 145.7, consistency: 97, position: 1,
+                        sectors: [22.987, 30.456, 29.234, 24.789, 27.987, 25.781],
+                        gearUsage: { gear2: 12, gear3: 22, gear4: 38, gear5: 23, gear6: 5 },
+                        avgGear: 4.3, maxGear: 6, gearShifts: 26,
+                        strengths: ["Excellent consistency", "Perfect gear selection", "Optimal shift timing"],
+                        weaknesses: ["Minor time loss in sector 6 gear transition"],
+                        recommendations: ["Maintain current technique", "Fine-tune sector 6 shift point"]
+                    },
+                    "COTA": {
+                        bestLap: "2:16.123", avgSpeed: 142.1, consistency: 95, position: 1,
+                        sectors: [27.123, 41.234, 34.567, 31.456, 30.789, 27.954],
+                        gearUsage: { gear2: 6, gear3: 16, gear4: 26, gear5: 36, gear6: 16 },
+                        avgGear: 5.0, maxGear: 6, gearShifts: 32,
+                        strengths: ["Master of gear management", "Perfect shift points", "Excellent racecraft"],
+                        weaknesses: ["None significant"],
+                        recommendations: ["Continue current approach", "Focus on race strategy"]
+                    },
+                    "VIR": {
+                        bestLap: "2:03.456", avgSpeed: 147.8, consistency: 98, position: 1,
+                        sectors: [24.456, 37.123, 31.234, 28.789, 29.123, 28.731],
+                        gearUsage: { gear2: 3, gear3: 12, gear4: 28, gear5: 38, gear6: 19 },
+                        avgGear: 5.2, maxGear: 6, gearShifts: 20,
+                        strengths: ["Perfect gear usage", "Optimal shift timing", "Excellent consistency"],
+                        weaknesses: ["None"],
+                        recommendations: ["Maintain excellence", "Help coach other drivers"]
+                    },
+                    "SEB": {
+                        bestLap: "2:42.123", avgSpeed: 142.5, consistency: 96, position: 1,
+                        sectors: [31.123, 47.234, 40.567, 34.123, 37.234, 28.842],
+                        gearUsage: { gear2: 6, gear3: 16, gear4: 30, gear5: 32, gear6: 16 },
+                        avgGear: 4.9, maxGear: 6, gearShifts: 25,
+                        strengths: ["Master of bumpy surfaces", "Perfect gear adaptation", "Excellent racecraft"],
+                        weaknesses: ["None significant"],
+                        recommendations: ["Continue excellence", "Share technique with team"]
+                    },
+                    "SON": {
+                        bestLap: "1:50.234", avgSpeed: 140.8, consistency: 97, position: 1,
+                        sectors: [27.234, 34.123, 30.456, 16.421],
+                        gearUsage: { gear2: 10, gear3: 22, gear4: 38, gear5: 25, gear6: 5 },
+                        avgGear: 4.5, maxGear: 6, gearShifts: 22,
+                        strengths: ["Perfect elevation handling", "Optimal carousel technique", "Excellent consistency"],
+                        weaknesses: ["None"],
+                        recommendations: ["Maintain current approach", "Focus on race strategy"]
+                    },
+                    "RA": {
+                        bestLap: "2:25.456", avgSpeed: 151.2, consistency: 98, position: 1,
+                        sectors: [34.456, 50.789, 42.123, 36.088],
+                        gearUsage: { gear2: 3, gear3: 10, gear4: 22, gear5: 38, gear6: 27 },
+                        avgGear: 5.5, maxGear: 6, gearShifts: 16,
+                        strengths: ["Perfect high-speed technique", "Optimal gear usage", "Excellent racecraft"],
+                        weaknesses: ["None"],
+                        recommendations: ["Continue current excellence", "Help develop team strategy"]
+                    },
+                    "INDY": {
+                        bestLap: "1:43.789", avgSpeed: 155.2, consistency: 99, position: 1,
+                        sectors: [25.789, 25.500, 26.000, 26.500],
+                        gearUsage: { gear2: 0, gear3: 1, gear4: 5, gear5: 22, gear6: 72 },
+                        avgGear: 5.9, maxGear: 6, gearShifts: 6,
+                        strengths: ["Perfect oval mastery", "Optimal gear usage", "Excellent draft technique"],
+                        weaknesses: ["None"],
+                        recommendations: ["Continue excellence", "Lead race strategy"]
+                    }
+                }
+            },
+            "003": {
+                name: "Driver #003",
+                chassis: "GR86-003-003", 
+                status: "struggling",
+                tracks: {
+                    "BMP": {
+                        bestLap: "1:26.123", avgSpeed: 138.9, consistency: 87, position: 8,
+                        sectors: [24.123, 32.456, 31.234, 26.789, 29.876, 27.645],
+                        gearUsage: { gear2: 20, gear3: 30, gear4: 28, gear5: 18, gear6: 4 },
+                        avgGear: 3.8, maxGear: 6, gearShifts: 35,
+                        strengths: ["Good sector 1 entry speed"],
+                        weaknesses: ["Poor gear selection", "Too many unnecessary shifts", "Staying in low gears too long"],
+                        recommendations: ["Learn optimal shift points", "Reduce gear changes", "Practice smooth shifting", "Use higher gears in fast sections"]
+                    },
+                    "COTA": {
+                        bestLap: "2:22.789", avgSpeed: 135.2, consistency: 83, position: 7,
+                        sectors: [29.789, 44.123, 37.456, 33.789, 32.876, 29.756],
+                        gearUsage: { gear2: 15, gear3: 25, gear4: 32, gear5: 23, gear6: 5 },
+                        avgGear: 4.1, maxGear: 6, gearShifts: 42,
+                        strengths: ["Improving gear awareness"],
+                        weaknesses: ["Excessive shifting", "Wrong gear selection in esses", "Missing shift points"],
+                        recommendations: ["Focus on gear discipline", "Practice shift timing", "Learn track-specific gear patterns"]
+                    },
+                    "VIR": {
+                        bestLap: "2:09.456", avgSpeed: 140.1, consistency: 89, position: 6,
+                        sectors: [26.456, 40.123, 33.789, 30.456, 31.234, 30.398],
+                        gearUsage: { gear2: 8, gear3: 20, gear4: 35, gear5: 28, gear6: 9 },
+                        avgGear: 4.5, maxGear: 6, gearShifts: 28,
+                        strengths: ["Better gear management on this track", "Improving consistency"],
+                        weaknesses: ["Still missing optimal shift points"],
+                        recommendations: ["Continue improvement", "Focus on high-speed gear selection"]
+                    },
+                    "SEB": {
+                        bestLap: "2:49.789", avgSpeed: 135.2, consistency: 84, position: 7,
+                        sectors: [33.789, 50.123, 43.456, 36.789, 39.876, 30.756],
+                        gearUsage: { gear2: 12, gear3: 25, gear4: 32, gear5: 23, gear6: 8 },
+                        avgGear: 4.3, maxGear: 6, gearShifts: 38,
+                        strengths: ["Improving on technical tracks"],
+                        weaknesses: ["Struggling with bumpy surface", "Poor gear selection in technical sections", "Too many gear changes"],
+                        recommendations: ["Focus on smooth inputs on bumps", "Reduce unnecessary shifting", "Practice consistent gear selection"]
+                    },
+                    "SON": {
+                        bestLap: "1:55.789", avgSpeed: 133.8, consistency: 82, position: 8,
+                        sectors: [30.789, 37.123, 33.456, 18.421],
+                        gearUsage: { gear2: 18, gear3: 30, gear4: 32, gear5: 18, gear6: 2 },
+                        avgGear: 3.9, maxGear: 6, gearShifts: 35,
+                        strengths: ["Good sector 1 performance"],
+                        weaknesses: ["Struggling with elevation changes", "Poor gear usage", "Not using high gears"],
+                        recommendations: ["Learn elevation braking technique", "Practice using higher gears", "Work on gear discipline"]
+                    },
+                    "RA": {
+                        bestLap: "2:34.567", avgSpeed: 143.1, consistency: 86, position: 7,
+                        sectors: [37.567, 55.123, 45.456, 39.421],
+                        gearUsage: { gear2: 6, gear3: 18, gear4: 35, gear5: 28, gear6: 13 },
+                        avgGear: 4.6, maxGear: 6, gearShifts: 32,
+                        strengths: ["Better high-speed performance", "Improving gear usage"],
+                        weaknesses: ["Still losing time in slow corners", "Inconsistent shift timing"],
+                        recommendations: ["Focus on corner exit technique", "Practice consistent shifting"]
+                    },
+                    "INDY": {
+                        bestLap: "1:48.456", avgSpeed: 149.2, consistency: 88, position: 6,
+                        sectors: [27.456, 27.000, 27.000, 27.000],
+                        gearUsage: { gear2: 0, gear3: 5, gear4: 15, gear5: 35, gear6: 45 },
+                        avgGear: 5.4, maxGear: 6, gearShifts: 12,
+                        strengths: ["Good oval adaptation", "Better gear usage for ovals"],
+                        weaknesses: ["Still not optimal gear timing"],
+                        recommendations: ["Continue oval technique development", "Focus on draft positioning"]
+                    }
+                }
+            },
+            "004": {
+                name: "Driver #004",
+                chassis: "GR86-004-004",
+                status: "needs-attention",
+                tracks: {
+                    "BMP": {
+                        bestLap: "1:25.789", avgSpeed: 140.2, consistency: 91, position: 5,
+                        sectors: [23.789, 31.876, 30.123, 25.456, 28.789, 26.756],
+                        gearUsage: { gear2: 18, gear3: 28, gear4: 32, gear5: 19, gear6: 3 },
+                        avgGear: 4.0, maxGear: 6, gearShifts: 31,
+                        strengths: ["Strong sector 1 & 4 performance", "Good gear selection in slow corners"],
+                        weaknesses: ["Losing time in sector 3", "Not using 6th gear enough", "Late upshifts"],
+                        recommendations: ["Work on high-speed gear usage", "Practice earlier upshifts", "Focus on sector 3 gear selection"]
+                    },
+                    "COTA": {
+                        bestLap: "2:20.456", avgSpeed: 137.8, consistency: 88, position: 6,
+                        sectors: [28.789, 43.456, 36.123, 32.789, 31.876, 28.423],
+                        gearUsage: { gear2: 10, gear3: 20, gear4: 30, gear5: 30, gear6: 10 },
+                        avgGear: 4.6, maxGear: 6, gearShifts: 38,
+                        strengths: ["Better gear distribution", "Good high-speed sections"],
+                        weaknesses: ["Inconsistent shift timing", "Missing optimal gear in technical sections"],
+                        recommendations: ["Focus on shift consistency", "Learn track-specific gear patterns"]
+                    },
+                    "VIR": {
+                        bestLap: "2:07.123", avgSpeed: 143.5, consistency: 93, position: 4,
+                        sectors: [25.123, 38.789, 32.456, 29.789, 30.456, 29.510],
+                        gearUsage: { gear2: 6, gear3: 16, gear4: 32, gear5: 32, gear6: 14 },
+                        avgGear: 4.9, maxGear: 6, gearShifts: 25,
+                        strengths: ["Much better gear management", "Good use of high gears", "Improving consistency"],
+                        weaknesses: ["Minor timing issues in gear changes"],
+                        recommendations: ["Continue current approach", "Fine-tune shift timing"]
+                    },
+                    "SEB": {
+                        bestLap: "2:47.456", avgSpeed: 137.8, consistency: 90, position: 5,
+                        sectors: [32.456, 49.123, 42.789, 35.456, 38.789, 29.843],
+                        gearUsage: { gear2: 10, gear3: 20, gear4: 30, gear5: 28, gear6: 12 },
+                        avgGear: 4.6, maxGear: 6, gearShifts: 30,
+                        strengths: ["Good adaptation to bumpy surface", "Improving gear consistency"],
+                        weaknesses: ["Losing time in technical sections", "Gear timing in bumps"],
+                        recommendations: ["Focus on smooth inputs over bumps", "Practice gear timing on rough surfaces"]
+                    },
+                    "SON": {
+                        bestLap: "1:53.456", avgSpeed: 136.2, consistency: 89, position: 6,
+                        sectors: [29.456, 36.123, 32.456, 17.421],
+                        gearUsage: { gear2: 14, gear3: 26, gear4: 34, gear5: 22, gear6: 4 },
+                        avgGear: 4.2, maxGear: 6, gearShifts: 28,
+                        strengths: ["Good elevation handling", "Improving gear selection"],
+                        weaknesses: ["Not using 6th gear enough", "Inconsistent in carousel"],
+                        recommendations: ["Practice high-speed gear usage", "Work on carousel technique"]
+                    },
+                    "RA": {
+                        bestLap: "2:30.789", avgSpeed: 146.5, consistency: 92, position: 4,
+                        sectors: [36.789, 53.123, 44.456, 38.421],
+                        gearUsage: { gear2: 5, gear3: 14, gear4: 28, gear5: 33, gear6: 20 },
+                        avgGear: 5.1, maxGear: 6, gearShifts: 22,
+                        strengths: ["Good high-speed performance", "Better gear usage", "Improving consistency"],
+                        weaknesses: ["Minor time loss in slow corners"],
+                        recommendations: ["Continue current improvement", "Focus on corner exit speed"]
+                    },
+                    "INDY": {
+                        bestLap: "1:46.789", avgSpeed: 151.8, consistency: 94, position: 4,
+                        sectors: [26.789, 26.500, 26.500, 27.000],
+                        gearUsage: { gear2: 0, gear3: 3, gear4: 10, gear5: 27, gear6: 60 },
+                        avgGear: 5.7, maxGear: 6, gearShifts: 10,
+                        strengths: ["Good oval technique", "Proper gear usage for ovals", "Good consistency"],
+                        weaknesses: ["Minor draft positioning issues"],
+                        recommendations: ["Continue oval development", "Work on draft strategy"]
+                    }
+                }
+            },
+            "005": {
+                name: "Driver #005",
+                chassis: "GR86-005-005",
+                status: "needs-attention",
+                tracks: {
+                    "BMP": {
+                        bestLap: "1:25.234", avgSpeed: 141.8, consistency: 89, position: 6,
+                        sectors: [23.234, 31.567, 30.456, 25.789, 28.234, 26.954],
+                        gearUsage: { gear2: 16, gear3: 26, gear4: 34, gear5: 20, gear6: 4 },
+                        avgGear: 4.1, maxGear: 6, gearShifts: 33,
+                        strengths: ["Good sector 1 performance", "Consistent braking"],
+                        weaknesses: ["Struggling with gear selection", "Late on throttle", "Missing shift points"],
+                        recommendations: ["Focus on gear timing", "Practice throttle application", "Work on shift point consistency"]
+                    },
+                    "COTA": {
+                        bestLap: "2:21.567", avgSpeed: 136.4, consistency: 86, position: 8,
+                        sectors: [29.234, 43.789, 36.567, 33.234, 32.123, 29.620],
+                        gearUsage: { gear2: 12, gear3: 22, gear4: 28, gear5: 28, gear6: 10 },
+                        avgGear: 4.4, maxGear: 6, gearShifts: 40,
+                        strengths: ["Improving gear awareness", "Better high-speed sections"],
+                        weaknesses: ["Inconsistent shift timing", "Struggling in technical sections"],
+                        recommendations: ["Focus on consistency", "Practice gear selection in esses", "Work on racecraft"]
+                    },
+                    "VIR": {
+                        bestLap: "2:08.789", avgSpeed: 142.1, consistency: 91, position: 5,
+                        sectors: [25.789, 39.234, 33.123, 30.234, 30.789, 29.620],
+                        gearUsage: { gear2: 7, gear3: 18, gear4: 30, gear5: 30, gear6: 15 },
+                        avgGear: 4.7, maxGear: 6, gearShifts: 26,
+                        strengths: ["Much better gear management", "Good consistency improvement"],
+                        weaknesses: ["Still missing some optimal shift points"],
+                        recommendations: ["Continue current improvement", "Fine-tune high-speed gear selection"]
+                    },
+                    "SEB": {
+                        bestLap: "2:48.567", avgSpeed: 136.4, consistency: 87, position: 6,
+                        sectors: [33.567, 49.789, 43.123, 36.234, 39.234, 30.620],
+                        gearUsage: { gear2: 11, gear3: 22, gear4: 31, gear5: 26, gear6: 10 },
+                        avgGear: 4.5, maxGear: 6, gearShifts: 32,
+                        strengths: ["Improving on technical tracks", "Better gear awareness"],
+                        weaknesses: ["Struggling with bumpy sections", "Inconsistent gear timing"],
+                        recommendations: ["Focus on smooth technique over bumps", "Practice consistent gear selection"]
+                    },
+                    "SON": {
+                        bestLap: "1:54.234", avgSpeed: 135.6, consistency: 85, position: 7,
+                        sectors: [30.234, 36.789, 32.789, 18.422],
+                        gearUsage: { gear2: 15, gear3: 28, gear4: 33, gear5: 20, gear6: 4 },
+                        avgGear: 4.1, maxGear: 6, gearShifts: 30,
+                        strengths: ["Good sector 1 performance", "Improving gear selection"],
+                        weaknesses: ["Struggling with elevation changes", "Not using high gears effectively"],
+                        recommendations: ["Practice elevation braking", "Work on high-speed gear usage", "Focus on consistency"]
+                    },
+                    "RA": {
+                        bestLap: "2:32.234", avgSpeed: 145.1, consistency: 90, position: 5,
+                        sectors: [37.234, 54.123, 45.123, 39.754],
+                        gearUsage: { gear2: 6, gear3: 16, gear4: 30, gear5: 30, gear6: 18 },
+                        avgGear: 4.9, maxGear: 6, gearShifts: 26,
+                        strengths: ["Good high-speed adaptation", "Better gear usage", "Improving consistency"],
+                        weaknesses: ["Minor time loss in technical sections"],
+                        recommendations: ["Continue current improvement", "Focus on technical section technique"]
+                    },
+                    "INDY": {
+                        bestLap: "1:47.567", avgSpeed: 150.4, consistency: 92, position: 5,
+                        sectors: [27.567, 26.800, 26.700, 27.500],
+                        gearUsage: { gear2: 0, gear3: 4, gear4: 12, gear5: 29, gear6: 55 },
+                        avgGear: 5.6, maxGear: 6, gearShifts: 12,
+                        strengths: ["Good oval adaptation", "Proper gear usage for ovals", "Good improvement"],
+                        weaknesses: ["Minor consistency issues"],
+                        recommendations: ["Continue oval technique development", "Focus on consistency"]
+                    }
+                }
+            }
+        };
+        
+        // Track configurations with detailed coaching insights
+        const trackConfigs = {
+            'BMP': { 
+                name: 'Barber Motorsports Park', 
+                insights: "Technical track requiring smooth inputs. Turn 5 is crucial - late apex and early throttle. Watch tire degradation on abrasive surface. Focus on maintaining momentum through the flowing sections."
+            },
+            'COTA': { 
+                name: 'Circuit of the Americas', 
+                insights: "Turn 1 is key for overtaking. Commit through the esses in sector 2. Manage tire temperatures in technical middle sector. Elevation changes affect braking points."
+            },
+            'VIR': { 
+                name: 'Virginia International Raceway', 
+                insights: "High-speed track requiring aerodynamic efficiency. The uphill esses demand precise car control. Focus on maintaining momentum through flowing sections."
+            },
+            'SEB': { 
+                name: 'Sebring International Raceway', 
+                insights: "Bumpy surface requires suspension setup focus. Turn 17 hairpin is critical for lap time. Manage tire wear on the abrasive concrete sections."
+            },
+            'SON': { 
+                name: 'Sonoma Raceway', 
+                insights: "Elevation changes affect braking points. Turn 2 and the carousel are lap time critical. Focus on late braking and trail braking technique."
+            },
+            'RA': { 
+                name: 'Road America', 
+                insights: "High-speed track with long straights. Aerodynamic efficiency crucial. The kink requires commitment. Focus on exit speed from slow corners."
+            },
+            'INDY': { 
+                name: 'Indianapolis Motor Speedway', 
+                insights: "Oval racing requires different techniques. Focus on car balance and tire management. Draft strategy is crucial for competitive positioning."
+            },
+            'SEB': { 
+                name: 'Sebring International Raceway', 
+                insights: "Bumpy surface requires suspension setup focus. Turn 17 hairpin is critical for lap time. Manage tire wear on the abrasive concrete sections."
+            },
+            'SON': { 
+                name: 'Sonoma Raceway', 
+                insights: "Elevation changes affect braking points. Turn 2 and the carousel are lap time critical. Focus on late braking and trail braking technique."
+            },
+            'RA': { 
+                name: 'Road America', 
+                insights: "High-speed track with long straights. Aerodynamic efficiency crucial. The kink requires commitment. Focus on exit speed from slow corners."
+            },
+            'INDY': { 
+                name: 'Indianapolis Motor Speedway', 
+                insights: "Oval racing requires different techniques. Focus on car balance and tire management. Draft strategy is crucial for competitive positioning."
+            }
+        };
+        
+        let selectedDriver = "001";
+        let currentTrack = "BMP";
+        
+        function initializeDashboard() {
+            console.log("Initializing GR Cup Coaching Dashboard v2.1");
+            populateDriverList();
+            updatePerformanceAnalysis(selectedDriver);
+            updateTrackDisplay(currentTrack);
+            generateCoachingInsights(selectedDriver);
+            
+            // Set up event listeners
+            document.getElementById('trackSelector').addEventListener('change', function() {
+                currentTrack = this.value;
+                updateTrackDisplay(currentTrack);
+                generateCoachingInsights(selectedDriver);
+            });
+            
+            startRealTimeUpdates();
+        }
+        
+        function populateDriverList() {
+            const driverList = document.getElementById('driverList');
+            driverList.innerHTML = '';
+            
+            Object.entries(driverData).forEach(([driverId, driver]) => {
+                const trackData = driver.tracks[currentTrack];
+                const driverCard = document.createElement('div');
+                driverCard.className = `driver-card ${driver.status}`;
+                if (driverId === selectedDriver) driverCard.classList.add('selected');
+                
+                if (!trackData) {
+                    driverCard.innerHTML = `
+                        <div class="driver-name">
+                            <span class="status-indicator status-warning"></span>
+                            ${driver.name}
+                        </div>
+                        <div style="font-size: 0.8em; opacity: 0.6;">No data for this track</div>
+                    `;
+                } else {
+                    driverCard.innerHTML = `
+                        <div class="driver-name">
+                            <span class="status-indicator status-${driver.status === 'fast' ? 'live' : driver.status === 'struggling' ? 'critical' : 'warning'}"></span>
+                            ${driver.name}
+                        </div>
+                        <div class="driver-stats">
+                            <div class="stat-item">
+                                <span>Position:</span>
+                                <span>P${trackData.position}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Best Lap:</span>
+                                <span>${trackData.bestLap}</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Avg Speed:</span>
+                                <span>${trackData.avgSpeed} mph</span>
+                            </div>
+                            <div class="stat-item">
+                                <span>Avg Gear:</span>
+                                <span>${trackData.avgGear}</span>
+                            </div>
+                        </div>
+                        <button class="drill-down-btn" onclick="openDetailedAnalysis('${driverId}', '${currentTrack}'); event.stopPropagation();">
+                            🔍 Deep Dive
+                        </button>
+                    `;
+                }
+                
+                driverCard.addEventListener('click', () => {
+                    selectedDriver = driverId;
+                    populateDriverList();
+                    updatePerformanceAnalysis(driverId);
+                    generateCoachingInsights(driverId);
+                });
+                
+                driverList.appendChild(driverCard);
+            });
+        }
+        
+        function updatePerformanceAnalysis(driverId) {
+            const driver = driverData[driverId];
+            const trackData = driver.tracks[currentTrack];
+            const performanceContent = document.getElementById('performanceContent');
+            
+            if (!trackData) {
+                performanceContent.innerHTML = `
+                    <h3 style="color: #eb0a1e; margin-bottom: 15px;">${driver.name} - No data for ${trackConfigs[currentTrack].name}</h3>
+                    <p>No performance data available for this track.</p>
+                `;
+                return;
+            }
+            
+            performanceContent.innerHTML = `
+                <h3 style="color: #eb0a1e; margin-bottom: 15px;">${driver.name} - ${trackConfigs[currentTrack].name}</h3>
+                <p style="font-size: 0.9em; opacity: 0.8; margin-bottom: 15px;">Chassis: ${driver.chassis}</p>
+                
+                <div class="performance-grid">
+                    <div class="metric-card">
+                        <div class="metric-value">${trackData.bestLap}</div>
+                        <div class="metric-label">Best Lap Time</div>
+                        <div class="metric-trend trend-down">P${trackData.position} Position</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${trackData.avgSpeed.toFixed(1)}</div>
+                        <div class="metric-label">Avg Speed (mph)</div>
+                        <div class="metric-trend trend-up">Avg Gear: ${trackData.avgGear.toFixed(1)}</div>
+                    </div>
+                    <div class="metric-card">
+                        <div class="metric-value">${trackData.consistency}%</div>
+                        <div class="metric-label">Consistency</div>
+                        <div class="metric-trend trend-stable">${trackData.gearShifts} shifts/lap</div>
+                    </div>
+                </div>
+                
+                <h4 style="color: #eb0a1e; margin-bottom: 10px;">Sector Analysis</h4>
+                <div class="sector-analysis">
+                    ${generateSectorAnalysis(trackData.sectors)}
+                </div>
+                
+                <h4 style="color: #eb0a1e; margin-bottom: 10px;">Gear Usage Analysis</h4>
+                <div style="background: #2a2a2a; padding: 15px; border-radius: 6px; margin-bottom: 15px;">
+                    ${generateGearUsageChart(trackData.gearUsage, trackData.avgGear, trackData.gearShifts)}
+                </div>
+                
+                <div class="comparison-chart">
+                    <h4 style="color: #eb0a1e; margin-bottom: 10px;">vs. Session Leader (#002)</h4>
+                    ${generateComparisonChart(trackData, driverData["002"].tracks[currentTrack])}
+                </div>
+                
+                <div style="text-align: center; margin-top: 15px;">
+                    <button class="drill-down-btn" onclick="openDetailedAnalysis('${driverId}', '${currentTrack}')" style="padding: 8px 15px; font-size: 0.9em;">
+                        🔍 View Detailed Analysis
+                    </button>
+                </div>
+            `;
+        }
+        
+        function generateSectorAnalysis(sectors) {
+            const bestSector = Math.min(...sectors);
+            const worstSector = Math.max(...sectors);
+            
+            return sectors.map((time, index) => {
+                let sectorClass = 'average';
+                if (time === bestSector) sectorClass = 'best';
+                else if (time === worstSector) sectorClass = 'worst';
+                
+                return `
+                    <div class="sector ${sectorClass}">
+                        <div>S${index + 1}</div>
+                        <div>${time.toFixed(3)}s</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function generateGearUsageChart(gearUsage, avgGear, gearShifts) {
+            const totalTime = Object.values(gearUsage).reduce((a, b) => a + b, 0);
+            
+            let gearChart = '<div style="margin-bottom: 10px;">';
+            gearChart += '<div style="display: flex; gap: 5px; margin-bottom: 10px;">';
+            
+            Object.entries(gearUsage).forEach(([gear, percentage]) => {
+                const gearNum = gear.replace('gear', '');
+                const width = (percentage / totalTime) * 100;
+                const color = getGearColor(parseInt(gearNum));
+                
+                gearChart += `
+                    <div style="background: ${color}; width: ${width}%; height: 25px; display: flex; align-items: center; justify-content: center; border-radius: 3px; font-size: 0.8em; font-weight: bold;">
+                        ${gearNum}
+                    </div>
+                `;
+            });
+            
+            gearChart += '</div>';
+            gearChart += `
+                <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; font-size: 0.85em;">
+                    <div><strong>Avg Gear:</strong> ${avgGear}</div>
+                    <div><strong>Max Gear:</strong> ${Math.max(...Object.keys(gearUsage).map(g => parseInt(g.replace('gear', ''))))}</div>
+                    <div><strong>Shifts/Lap:</strong> ${gearShifts}</div>
+                </div>
+            `;
+            gearChart += '</div>';
+            
+            return gearChart;
+        }
+        
+        function getGearColor(gear) {
+            const colors = {
+                1: '#ff4444', 2: '#ff8844', 3: '#ffaa44', 
+                4: '#ffdd44', 5: '#88ff44', 6: '#44ff88'
+            };
+            return colors[gear] || '#666666';
+        }
+        
+        function generateComparisonChart(driverTrackData, leaderTrackData) {
+            if (!leaderTrackData) return '<p>No comparison data available</p>';
+            
+            return driverTrackData.sectors.map((time, index) => {
+                const delta = time - leaderTrackData.sectors[index];
+                const percentage = Math.min(100, Math.abs(delta) * 50);
+                
+                return `
+                    <div class="chart-bar">
+                        <div class="chart-label">S${index + 1}</div>
+                        <div class="chart-bar-fill" style="width: ${percentage}%; background: ${delta > 0 ? '#ff4444' : '#44ff44'}"></div>
+                        <div class="chart-value">${delta > 0 ? '+' : ''}${delta.toFixed(3)}s</div>
+                    </div>
+                `;
+            }).join('');
+        }
+        
+        function updateTrackDisplay(trackId) {
+            const config = trackConfigs[trackId];
+            const trackImage = document.getElementById('trackImage');
+            
+            document.getElementById('currentTrackName').textContent = config.name;
+            document.getElementById('trackInsights').textContent = config.insights;
+            
+            // Update track selector
+            document.getElementById('trackSelector').value = trackId;
+            
+            // Load track image
+            if (typeof TRACK_IMAGES !== 'undefined' && TRACK_IMAGES[trackId]) {
+                trackImage.src = TRACK_IMAGES[trackId].image_url;
+                trackImage.alt = `${config.name} Track Layout`;
+            } else {
+                // Fallback SVG
+                const trackContainer = document.querySelector('.track-container');
+                trackContainer.innerHTML = `
+                    <svg width="100%" height="100%" viewBox="0 0 300 200" style="background: #0a0a0a;">
+                        <ellipse cx="150" cy="100" rx="120" ry="80" 
+                                 fill="none" stroke="#eb0a1e" stroke-width="2"/>
+                        <circle cx="150" cy="20" r="3" fill="#00ff00"/>
+                        <text x="150" y="100" text-anchor="middle" fill="white" font-size="12">
+                            ${config.name}
+                        </text>
+                    </svg>
+                `;
+            }
+        }
+        
+        function generateCoachingInsights(driverId) {
+            const driver = driverData[driverId];
+            const trackData = driver.tracks[currentTrack];
+            const coachingContent = document.getElementById('coachingContent');
+            
+            if (!trackData) {
+                coachingContent.innerHTML = `
+                    <div class="coaching-card">
+                        <div class="coaching-title">📊 No Data Available</div>
+                        <div class="coaching-detail">
+                            No performance data available for ${driver.name} at ${trackConfigs[currentTrack].name}.
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+            
+            let insights = '';
+            
+            // Critical issues for struggling drivers
+            if (driver.status === 'needs-attention' || driver.status === 'struggling') {
+                insights += `
+                    <div class="coaching-card critical">
+                        <div class="coaching-title">🚨 Critical Issues</div>
+                        <div class="coaching-detail">
+                            ${trackData.weaknesses.join('. ')}. Immediate attention required.
+                        </div>
+                    </div>
+                `;
+            }
+            
+            // Gear-specific coaching
+            insights += `
+                <div class="coaching-card improvement">
+                    <div class="coaching-title">⚙️ Gear Usage Coaching</div>
+                    <div class="coaching-detail">
+                        ${getGearCoaching(trackData)}
+                    </div>
+                </div>
+            `;
+            
+            // Specific recommendations
+            insights += `
+                <div class="coaching-card improvement">
+                    <div class="coaching-title">💡 Coaching Recommendations</div>
+                    <div class="coaching-detail">
+                        ${trackData.recommendations.map(rec => `• ${rec}`).join('<br>')}
+                    </div>
+                </div>
+            `;
+            
+            // Strengths to maintain
+            insights += `
+                <div class="coaching-card positive">
+                    <div class="coaching-title">✅ Strengths to Maintain</div>
+                    <div class="coaching-detail">
+                        ${trackData.strengths.map(str => `• ${str}`).join('<br>')}
+                    </div>
+                </div>
+            `;
+            
+            // Chassis-specific insights
+            insights += `
+                <div class="coaching-card">
+                    <div class="coaching-title">🔧 Chassis Setup Notes</div>
+                    <div class="coaching-detail">
+                        Chassis: ${driver.chassis}<br>
+                        ${getChassisRecommendations(trackData)}
+                    </div>
+                </div>
+            `;
+            
+            // Track-specific coaching
+            insights += `
+                <div class="coaching-card">
+                    <div class="coaching-title">🏁 Track-Specific Coaching</div>
+                    <div class="coaching-detail">
+                        ${getTrackSpecificCoaching(trackData, currentTrack)}
+                    </div>
+                </div>
+            `;
+            
+            coachingContent.innerHTML = insights;
+        }
+        
+        function getGearCoaching(trackData) {
+            let coaching = [];
+            
+            if (trackData.avgGear < 4.0) {
+                coaching.push("• Using too many low gears - practice using higher gears in fast sections");
+            }
+            
+            if (trackData.gearShifts > 35) {
+                coaching.push("• Too many gear changes per lap - focus on smoother gear transitions");
+            }
+            
+            if (trackData.gearUsage.gear6 < 5 && currentTrack !== 'BMP') {
+                coaching.push("• Not utilizing 6th gear enough - look for opportunities on straights");
+            }
+            
+            if (trackData.gearUsage.gear2 > 20) {
+                coaching.push("• Spending too much time in 2nd gear - work on corner exit speed");
+            }
+            
+            if (coaching.length === 0) {
+                coaching.push("• Good gear usage overall - maintain current technique");
+            }
+            
+            return coaching.join('<br>');
+        }
+        
+        function getChassisRecommendations(trackData) {
+            if (trackData.consistency < 90) {
+                return "Consider softer suspension settings for better predictability. Check tire pressures - may be contributing to inconsistency.";
+            } else if (trackData.avgSpeed < 140) {
+                return "Aerodynamic package may need adjustment. Consider lower downforce setup for better straight-line speed.";
+            } else {
+                return "Chassis balance looks good. Fine-tune differential settings for optimal corner exit.";
+            }
+        }
+        
+        function getTrackSpecificCoaching(trackData, trackId) {
+            const trackAdvice = {
+                'BMP': "Focus on smooth inputs through technical sections. Turn 5 late apex crucial for lap time.",
+                'COTA': "Commit through the esses in sector 2. Turn 1 positioning critical for race strategy.",
+                'VIR': "Maintain momentum through flowing sections. Uphill esses require precise car control.",
+                'SEB': "Adjust for bumpy surface. Turn 17 hairpin is lap time critical.",
+                'SON': "Elevation changes affect braking points. Focus on trail braking technique.",
+                'RA': "High-speed track - aerodynamic efficiency crucial. Commit through the kink.",
+                'INDY': "Oval techniques required. Focus on car balance and tire management."
+            };
+            
+            return trackAdvice[trackId] || "Focus on fundamentals and smooth driving technique.";
+        }
+        
+        function startRealTimeUpdates() {
+            setInterval(() => {
+                // Simulate minor performance changes
+                if (Math.random() < 0.2) {
+                    Object.keys(driverData).forEach(driverId => {
+                        const driver = driverData[driverId];
+                        Object.keys(driver.tracks).forEach(trackId => {
+                            const trackData = driver.tracks[trackId];
+                            trackData.avgSpeed += (Math.random() - 0.5) * 0.3;
+                            trackData.consistency += (Math.random() - 0.5) * 0.2;
+                            
+                            // Keep values in realistic ranges
+                            trackData.avgSpeed = Math.max(130, Math.min(150, trackData.avgSpeed));
+                            trackData.consistency = Math.max(80, Math.min(100, trackData.consistency));
+                        });
+                    });
+                    
+                    populateDriverList();
+                    if (selectedDriver) {
+                        updatePerformanceAnalysis(selectedDriver);
+                    }
+                }
+            }, 5000); // Reduced frequency since no time display
+        }
+        
+        // Navigation functions
+        function openDetailedAnalysis(driverId = null, trackId = null) {
+            let url = 'detailed_analysis.html';
+            const params = new URLSearchParams();
+            
+            if (driverId) params.append('driver', driverId);
+            if (trackId) params.append('track', trackId);
+            
+            if (params.toString()) {
+                url += '?' + params.toString();
+            }
+            
+            window.open(url, '_blank');
+        }
+        
+        // Add keyboard shortcut for detailed analysis
+        document.addEventListener('keydown', function(event) {
+            if (event.ctrlKey && event.key === 'd') {
+                event.preventDefault();
+                openDetailedAnalysis(selectedDriver, currentTrack);
+            }
+        });
+        
+        // Initialize dashboard when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log("DOM loaded, initializing dashboard...");
+            initializeDashboard();
+        });
+    </script>
+</body>
+</html>

@@ -78,5 +78,21 @@
     "is_working": true,
     "timestamp": "20251105_185239",
     "created_at": "2025-11-05T18:52:39.473599"
+  },
+  {
+    "version_name": "v2.8",
+    "filename": "track_dashboard_v2.8_working_20251107_140514.html",
+    "description": "Implemented all analysis modes - telemetry deep dive, driver comparison, and historical trends",
+    "is_working": true,
+    "timestamp": "20251107_140514",
+    "created_at": "2025-11-07T14:05:14.788616"
+  },
+  {
+    "version_name": "v2.9",
+    "filename": "track_dashboard_v2.9_working_20251107_143220.html",
+    "description": "Added complete data for all 5 drivers across all 7 tracks in detailed analysis dashboard",
+    "is_working": true,
+    "timestamp": "20251107_143220",
+    "created_at": "2025-11-07T14:32:21.048954"
   }
 ]
