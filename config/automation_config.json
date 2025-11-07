@@ -1,0 +1,88 @@
+{
+  "version": "1.0",
+  "last_updated": "2025-11-07",
+  
+  "data_sources": {
+    "csv_directory": "data/raw",
+    "cleaned_directory": "data/cleaned",
+    "supported_formats": ["csv", "json"],
+    "required_columns": [
+      "vehicle_id",
+      "timestamp",
+      "lap",
+      "Speed",
+      "Gear",
+      "track_name",
+      "track_id"
+    ]
+  },
+  
+  "processing": {
+    "auto_clean": true,
+    "validate_data": true,
+    "remove_outliers": true,
+    "fill_missing_values": true,
+    "generate_reports": true,
+    "min_data_points": 100,
+    "max_speed": 200,
+    "max_gear": 6
+  },
+  
+  "analysis": {
+    "calculate_best_lap": true,
+    "calculate_sectors": true,
+    "calculate_gear_usage": true,
+    "calculate_consistency": true,
+    "generate_insights": true
+  },
+  
+  "deployment": {
+    "s3_bucket": "gr-cup-data-dev-us-east-1-v2",
+    "s3_region": "us-east-1",
+    "auto_deploy": true,
+    "create_backup": true,
+    "files_to_deploy": [
+      "dashboard/track_dashboard.html",
+      "dashboard/detailed_analysis.html",
+      "dashboard/dashboard_data.js",
+      "dashboard/track_images_embedded.js"
+    ]
+  },
+  
+  "schedule": {
+    "enabled": false,
+    "frequency": "hourly",
+    "time": "00:00",
+    "days": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+  },
+  
+  "notifications": {
+    "enabled": false,
+    "email": {
+      "enabled": false,
+      "recipients": ["admin@grcup.com"],
+      "smtp_server": "smtp.gmail.com",
+      "smtp_port": 587
+    },
+    "slack": {
+      "enabled": false,
+      "webhook_url": ""
+    }
+  },
+  
+  "logging": {
+    "level": "INFO",
+    "file": "logs/automation.log",
+    "max_size_mb": 10,
+    "backup_count": 5,
+    "console_output": true
+  },
+  
+  "monitoring": {
+    "check_data_freshness": true,
+    "max_data_age_hours": 24,
+    "alert_on_failure": true,
+    "retry_on_error": true,
+    "max_retries": 3
+  }
+}
